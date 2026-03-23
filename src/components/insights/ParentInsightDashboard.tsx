@@ -5,6 +5,7 @@ import type { Insight } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import { MonthSelector } from "./MonthSelector";
+import { ShareModal } from "./ShareModal";
 import { ArtistObsessionCard } from "./ArtistObsessionCard";
 import { InterestHeatmap } from "./InterestHeatmap";
 import { CreativeEvolution } from "./CreativeEvolution";
@@ -164,6 +165,7 @@ export function ParentInsightDashboard({
   );
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [showShare, setShowShare] = useState(false);
 
   const displayName = locale === "he" && childNameHe ? childNameHe : childName;
 
@@ -219,6 +221,18 @@ export function ParentInsightDashboard({
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <LocaleToggle />
+            {insight && (
+              <button
+                onClick={() => setShowShare(true)}
+                className="w-9 h-9 rounded-full bg-[#f5f0eb] flex items-center justify-center hover:bg-[#ede8e2] transition-colors"
+                aria-label="Share report"
+                title="Share report"
+              >
+                <svg className="w-4 h-4 text-[#5c4a38]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
+                </svg>
+              </button>
+            )}
             {availablePeriods.length > 0 && (
               <MonthSelector
                 periods={availablePeriods}
@@ -270,6 +284,16 @@ export function ParentInsightDashboard({
       <footer className="text-center pb-8 text-xs text-[#c4b5a5] animate-fade-in">
         {t("footer")}
       </footer>
+
+      {/* ── Share modal ──────────────────────────────────────────────────── */}
+      {showShare && insight && (
+        <ShareModal
+          insight={insight}
+          childName={displayName}
+          artworkCount={artworksForPeriod.length}
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </div>
   );
 }
