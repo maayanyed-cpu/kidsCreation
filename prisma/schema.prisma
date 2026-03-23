@@ -34,14 +34,18 @@ model Insights {
 }
 
 model ArtworkAnalysis {
-  id                 String   @id @default(cuid())
-  artwork_id         String   @unique
+  id                 String    @id @default(cuid())
+  artwork_id         String    @unique
   child_id           String
   image_url          String
-  analysis_date      DateTime @default(now())
-  predominant_colors String   // JSON-serialized string[]
-  main_subjects      String   // JSON-serialized string[]
+  thumb_url          String?   // 400px thumbnail (null for seeded/external images)
+  title              String?   // optional parent-supplied title
+  status             String    @default("analyzed") // "pending" | "analyzed"
+  analysis_date      DateTime  @default(now())
+  predominant_colors String    // JSON-serialized string[]
+  main_subjects      String    // JSON-serialized string[]
   technique_notes    String
-  ai_tags            String   // JSON-serialized string[]
-  emotional_tone     String   @default("Joyful")
+  ai_tags            String    // JSON-serialized string[]
+  emotional_tone     String    @default("Joyful")
+  deleted_at         DateTime? // soft delete
 }

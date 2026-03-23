@@ -228,6 +228,7 @@ export async function analyzeArtworkImage(
     artwork_id: input.artwork_id,
     child_id: input.child_id,
     image_url: input.image_url,
+    status: "analyzed",
     predominant_colors: result.predominant_colors,
     main_subjects: result.main_subjects,
     technique_notes: result.technique_notes,

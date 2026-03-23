@@ -1,27 +1,59 @@
-export default function UploadPage() {
+import { prisma } from "@/lib/db/prisma";
+import { UploadForm } from "@/components/upload/UploadForm";
+import type { Child } from "@/types/child";
+
+const DEFAULT_CHILD_ID = "child_003";
+
+async function getAllChildren(): Promise<Child[]> {
+  const rows = await prisma.child.findMany({ orderBy: { created_at: "asc" } });
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    name_he: r.name_he,
+    avatar_emoji: r.avatar_emoji,
+    date_of_birth: r.date_of_birth,
+    created_at: r.created_at,
+  }));
+}
+
+interface PageProps {
+  searchParams: Promise<{ child?: string }>;
+}
+
+export default async function UploadPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const childId = params.child ?? DEFAULT_CHILD_ID;
+  const allChildren = await getAllChildren();
+  const selectedChild =
+    allChildren.find((c) => c.id === childId) ??
+    allChildren.find((c) => c.id === DEFAULT_CHILD_ID) ??
+    allChildren[0];
+
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 text-center"
+      className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 40%, #f0faf8 100%)" }}
     >
-      <span className="text-6xl mb-6">🎨</span>
-      <h1
-        className="text-2xl font-bold text-[#2d1f14] mb-3"
-        style={{ fontFamily: "var(--font-display)" }}
+      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-4">
+        <div className="max-w-lg mx-auto">
+          <h1
+            className="text-xl font-bold text-[#2d1f14] tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            ➕ Add a Creation
+          </h1>
+        </div>
+      </header>
+
+      <main
+        className="max-w-lg mx-auto px-4 sm:px-6 py-6"
+        style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
       >
-        Upload Artwork
-      </h1>
-      <p className="text-sm text-[#9b8474] max-w-xs leading-relaxed">
-        Coming soon — drop a photo of your child&apos;s artwork to start the magic.
-      </p>
-      <div
-        className="mt-8 w-full max-w-xs h-40 rounded-2xl border-2 border-dashed border-[#e0d8d0] flex flex-col items-center justify-center gap-2 text-[#9b8474] cursor-not-allowed"
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 20h16" />
-        </svg>
-        <span className="text-sm">Tap to upload</span>
-      </div>
+        <UploadForm
+          children={allChildren}
+          defaultChildId={selectedChild.id}
+        />
+      </main>
     </div>
   );
 }

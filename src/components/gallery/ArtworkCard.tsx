@@ -44,14 +44,14 @@ export function ArtworkCard({ artwork, childParam }: Props) {
       <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede9]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={artwork.image_url}
-          alt={artwork.main_subjects.join(", ")}
+          src={artwork.thumb_url ?? artwork.image_url}
+          alt={artwork.main_subjects.join(", ") || artwork.title || "artwork"}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
-        {/* Sentiment badge */}
+        {/* Sentiment or pending badge */}
         <span className="absolute top-2 end-2 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-base shadow-sm">
-          {sentimentEmoji}
+          {artwork.status === "pending" ? "⏳" : sentimentEmoji}
         </span>
       </div>
 

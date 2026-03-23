@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { deserialize } from "@/lib/db/serialization";
+import { mapArtwork } from "@/lib/db/artworkMapper";
 import { ArtworkGrid } from "@/components/gallery/ArtworkGrid";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import type { Child } from "@/types/child";
@@ -20,21 +20,10 @@ async function getAllChildren(): Promise<Child[]> {
 
 async function getArtworksForChild(childId: string): Promise<ArtworkAnalysis[]> {
   const rows = await prisma.artworkAnalysis.findMany({
-    where: { child_id: childId },
+    where: { child_id: childId, deleted_at: null },
     orderBy: { analysis_date: "desc" },
   });
-  return rows.map((r) => ({
-    id: r.id,
-    artwork_id: r.artwork_id,
-    child_id: r.child_id,
-    image_url: r.image_url,
-    analysis_date: r.analysis_date,
-    predominant_colors: deserialize(r.predominant_colors),
-    main_subjects: deserialize(r.main_subjects),
-    technique_notes: r.technique_notes,
-    ai_tags: deserialize(r.ai_tags),
-    emotional_tone: r.emotional_tone,
-  }));
+  return rows.map(mapArtwork);
 }
 
 interface PageProps {

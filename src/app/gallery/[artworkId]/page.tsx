@@ -1,26 +1,15 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import { mapArtwork } from "@/lib/db/artworkMapper";
 import { deserialize } from "@/lib/db/serialization";
 import { ArtworkDetail } from "@/components/gallery/ArtworkDetail";
 import type { ArtworkAnalysis } from "@/types/artwork";
 
 async function getArtwork(artworkId: string): Promise<ArtworkAnalysis | null> {
   const raw = await prisma.artworkAnalysis.findUnique({
-    where: { artwork_id: artworkId },
+    where: { artwork_id: artworkId, deleted_at: null },
   });
-  if (!raw) return null;
-  return {
-    id: raw.id,
-    artwork_id: raw.artwork_id,
-    child_id: raw.child_id,
-    image_url: raw.image_url,
-    analysis_date: raw.analysis_date,
-    predominant_colors: deserialize(raw.predominant_colors),
-    main_subjects: deserialize(raw.main_subjects),
-    technique_notes: raw.technique_notes,
-    ai_tags: deserialize(raw.ai_tags),
-    emotional_tone: raw.emotional_tone,
-  };
+  return raw ? mapArtwork(raw) : null;
 }
 
 interface PageProps {

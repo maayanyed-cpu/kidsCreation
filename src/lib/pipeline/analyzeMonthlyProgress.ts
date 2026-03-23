@@ -41,24 +41,32 @@ function mapDbArtwork(row: {
   artwork_id: string;
   child_id: string;
   image_url: string;
+  thumb_url: string | null;
+  title: string | null;
+  status: string;
   analysis_date: Date;
   predominant_colors: string;
   main_subjects: string;
   technique_notes: string;
   ai_tags: string;
   emotional_tone: string;
+  deleted_at: Date | null;
 }): ArtworkAnalysis {
   return {
     id: row.id,
     artwork_id: row.artwork_id,
     child_id: row.child_id,
     image_url: row.image_url,
+    thumb_url: row.thumb_url,
+    title: row.title,
+    status: row.status,
     analysis_date: row.analysis_date,
     predominant_colors: deserialize(row.predominant_colors),
     main_subjects: deserialize(row.main_subjects),
     technique_notes: row.technique_notes,
     ai_tags: deserialize(row.ai_tags),
     emotional_tone: row.emotional_tone,
+    deleted_at: row.deleted_at,
   };
 }
 
@@ -97,6 +105,7 @@ export async function analyzeMonthlyProgress(
     where: {
       child_id: childId,
       analysis_date: { gte: since },
+      deleted_at: null,
     },
     orderBy: { analysis_date: "asc" },
   });
@@ -155,6 +164,7 @@ export async function analyzeMonthlyProgress(
         technique_notes: result.technique_notes,
         ai_tags: serialize(result.ai_tags),
         emotional_tone: result.emotional_tone,
+        status: "analyzed",
       },
     });
 
