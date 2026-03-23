@@ -261,7 +261,7 @@ export function ParentInsightDashboard({
       {/* ── Body ─────────────────────────────────────────────────────────── */}
       <main
         className="max-w-3xl mx-auto px-4 sm:px-6 py-8"
-        style={{ paddingBottom: "calc(2rem + env(safe-area-inset-bottom))" }}
+        style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
       >
         {isPending ? (
           <SkeletonDashboard />

@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
-import { mapInsight } from "@/lib/db/insightMapper";
 import { deserialize } from "@/lib/db/serialization";
-import { ParentInsightDashboard } from "@/components/insights/ParentInsightDashboard";
+import { ArtworkGrid } from "@/components/gallery/ArtworkGrid";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import type { Child } from "@/types/child";
 
@@ -17,23 +16,6 @@ async function getAllChildren(): Promise<Child[]> {
     date_of_birth: r.date_of_birth,
     created_at: r.created_at,
   }));
-}
-
-async function getLatestInsight(childId: string) {
-  const raw = await prisma.insights.findFirst({
-    where: { child_id: childId },
-    orderBy: { created_at: "desc" },
-  });
-  return raw ? mapInsight(raw) : null;
-}
-
-async function getAllPeriods(childId: string) {
-  const rows = await prisma.insights.findMany({
-    where: { child_id: childId },
-    select: { analysis_period: true },
-    orderBy: { created_at: "desc" },
-  });
-  return rows.map((r) => r.analysis_period);
 }
 
 async function getArtworksForChild(childId: string): Promise<ArtworkAnalysis[]> {
@@ -59,33 +41,46 @@ interface PageProps {
   searchParams: Promise<{ child?: string }>;
 }
 
-export default async function DashboardPage({ searchParams }: PageProps) {
+export default async function GalleryPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const childId = params.child ?? DEFAULT_CHILD_ID;
 
-  const [allChildren, initialInsight, periods, artworks] = await Promise.all([
+  const [allChildren, artworks] = await Promise.all([
     getAllChildren(),
-    getLatestInsight(childId),
-    getAllPeriods(childId),
     getArtworksForChild(childId),
   ]);
 
-  // Fall back to default child if the requested ID doesn't exist
   const selectedChild =
     allChildren.find((c) => c.id === childId) ??
     allChildren.find((c) => c.id === DEFAULT_CHILD_ID) ??
     allChildren[0];
 
   return (
-    <ParentInsightDashboard
-      initialInsight={initialInsight}
-      childId={selectedChild.id}
-      childName={selectedChild.name}
-      childNameHe={selectedChild.name_he ?? undefined}
-      availablePeriods={periods}
-      allArtworks={artworks}
-      allChildren={allChildren}
-      selectedChildId={selectedChild.id}
-    />
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 40%, #f0faf8 100%)" }}
+    >
+      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-4">
+        <div className="max-w-3xl mx-auto">
+          <h1
+            className="text-xl font-bold text-[#2d1f14] tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            🎨 Gallery
+          </h1>
+        </div>
+      </header>
+
+      <main
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-6"
+        style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
+      >
+        <ArtworkGrid
+          artworks={artworks}
+          allChildren={allChildren}
+          selectedChildId={selectedChild.id}
+        />
+      </main>
+    </div>
   );
 }

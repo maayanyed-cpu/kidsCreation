@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import type { Child } from "@/types/child";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 
@@ -11,6 +11,7 @@ interface Props {
 
 export function ChildSwitcher({ children, selectedChildId }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const { locale } = useLocale();
 
   return (
@@ -21,7 +22,7 @@ export function ChildSwitcher({ children, selectedChildId }: Props) {
         return (
           <button
             key={child.id}
-            onClick={() => router.push(`/dashboard?child=${child.id}`)}
+            onClick={() => router.push(`${pathname}?child=${child.id}`)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-150 ${
               isSelected
                 ? "bg-[#ff7657] text-white shadow-sm"
