@@ -34,4 +34,5 @@ model ArtworkAnalysis {
   main_subjects      String   // JSON-serialized string[]
   technique_notes    String
   ai_tags            String   // JSON-serialized string[]
+  emotional_tone     String   @default("Joyful")
 }

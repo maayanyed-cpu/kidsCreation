@@ -8,4 +8,5 @@ export interface ArtworkAnalysis {
   main_subjects: string[];
   technique_notes: string;
   ai_tags: string[];
+  emotional_tone: string;
 }
