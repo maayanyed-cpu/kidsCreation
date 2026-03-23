@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Insights {
+  id                    String   @id @default(cuid())
+  child_id              String
+  analysis_period       String   // e.g. "March 2026"
+  tags                  String   // JSON-serialized string[]
+  sentiment             String   // e.g. "Joyful", "Calm", "Energetic"
+  milestone_detected    String   // free text developmental observation
+  top_interest          String   // "obsession of the month"
+  growth_tip            String   // Celebrate & Stretch recommendation
+  encouragement_scripts String   // JSON-serialized string[]
+  visual_evolution      Json     // { color_diversity: number, line_confidence: string, subject_complexity: string }
+  thematic_focus        Json     // { subjects: Record<string, number> }
+  created_at            DateTime @default(now())
+
+  @@unique([child_id, analysis_period])
+}
+
+model ArtworkAnalysis {
+  id                 String   @id @default(cuid())
+  artwork_id         String   @unique
+  child_id           String
+  image_url          String
+  analysis_date      DateTime @default(now())
+  predominant_colors String   // JSON-serialized string[]
+  main_subjects      String   // JSON-serialized string[]
+  technique_notes    String
+  ai_tags            String   // JSON-serialized string[]
+}
