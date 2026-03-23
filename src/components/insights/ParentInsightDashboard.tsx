@@ -4,8 +4,10 @@ import { useState, useTransition } from "react";
 import type { Insight } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import type { Child } from "@/types/child";
 import { MonthSelector } from "./MonthSelector";
 import { ShareModal } from "./ShareModal";
+import { ChildSwitcher } from "./ChildSwitcher";
 import { ArtistObsessionCard } from "./ArtistObsessionCard";
 import { InterestHeatmap } from "./InterestHeatmap";
 import { CreativeEvolution } from "./CreativeEvolution";
@@ -21,6 +23,8 @@ interface Props {
   childNameHe?: string;
   availablePeriods: string[];
   allArtworks: ArtworkAnalysis[];
+  allChildren: Child[];
+  selectedChildId: string;
 }
 
 // ── Locale toggle ──────────────────────────────────────────────────────────
@@ -157,6 +161,8 @@ export function ParentInsightDashboard({
   childNameHe,
   availablePeriods,
   allArtworks,
+  allChildren,
+  selectedChildId,
 }: Props) {
   const { t, locale, dir } = useLocale();
   const [insight, setInsight] = useState<Insight | null>(initialInsight);
@@ -205,43 +211,50 @@ export function ParentInsightDashboard({
       dir={dir}
     >
       {/* ── Header ───────────────────────────────────────────────────────── */}
-      <header className="animate-fade-in sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <h1
-              className="text-xl font-bold text-[#2d1f14] truncate tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {t("header.title", { name: displayName })}
-            </h1>
-            <p className="text-xs text-[#9b8474] mt-0.5 hidden sm:block">
-              {t("header.subtitle")}
-            </p>
+      <header className="animate-fade-in sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-3">
+        <div className="max-w-3xl mx-auto">
+          {/* Top row: title + controls */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <h1
+                className="text-xl font-bold text-[#2d1f14] truncate tracking-tight"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {t("header.title", { name: displayName })}
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <LocaleToggle />
+              {insight && (
+                <button
+                  onClick={() => setShowShare(true)}
+                  className="w-9 h-9 rounded-full bg-[#f5f0eb] flex items-center justify-center hover:bg-[#ede8e2] transition-colors"
+                  aria-label="Share report"
+                  title="Share report"
+                >
+                  <svg className="w-4 h-4 text-[#5c4a38]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
+                  </svg>
+                </button>
+              )}
+              {availablePeriods.length > 0 && (
+                <MonthSelector
+                  periods={availablePeriods}
+                  selected={selectedPeriod}
+                  onChange={handlePeriodChange}
+                  loading={isPending}
+                />
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <LocaleToggle />
-            {insight && (
-              <button
-                onClick={() => setShowShare(true)}
-                className="w-9 h-9 rounded-full bg-[#f5f0eb] flex items-center justify-center hover:bg-[#ede8e2] transition-colors"
-                aria-label="Share report"
-                title="Share report"
-              >
-                <svg className="w-4 h-4 text-[#5c4a38]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
-                </svg>
-              </button>
-            )}
-            {availablePeriods.length > 0 && (
-              <MonthSelector
-                periods={availablePeriods}
-                selected={selectedPeriod}
-                onChange={handlePeriodChange}
-                loading={isPending}
-              />
-            )}
-          </div>
+          {/* Child switcher row */}
+          {allChildren.length > 1 && (
+            <div className="mt-2">
+              <ChildSwitcher children={allChildren} selectedChildId={selectedChildId} />
+            </div>
+          )}
         </div>
       </header>
 

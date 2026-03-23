@@ -1,0 +1,39 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import type { Child } from "@/types/child";
+import { useLocale } from "@/lib/i18n/LocaleContext";
+
+interface Props {
+  children: Child[];
+  selectedChildId: string;
+}
+
+export function ChildSwitcher({ children, selectedChildId }: Props) {
+  const router = useRouter();
+  const { locale } = useLocale();
+
+  return (
+    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+      {children.map((child) => {
+        const isSelected = child.id === selectedChildId;
+        const name = locale === "he" && child.name_he ? child.name_he : child.name;
+        return (
+          <button
+            key={child.id}
+            onClick={() => router.push(`/dashboard?child=${child.id}`)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-150 ${
+              isSelected
+                ? "bg-[#ff7657] text-white shadow-sm"
+                : "bg-[#f5f0eb] text-[#5c4a38] hover:bg-[#ede8e2]"
+            }`}
+            aria-current={isSelected ? "true" : undefined}
+          >
+            <span>{child.avatar_emoji}</span>
+            <span>{name}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}

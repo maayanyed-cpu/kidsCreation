@@ -7,6 +7,15 @@ datasource db {
   provider = "sqlite"
 }
 
+model Child {
+  id            String    @id
+  name          String
+  name_he       String?
+  avatar_emoji  String
+  date_of_birth DateTime?
+  created_at    DateTime  @default(now())
+}
+
 model Insights {
   id                    String   @id @default(cuid())
   child_id              String
