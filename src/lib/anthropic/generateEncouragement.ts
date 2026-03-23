@@ -87,25 +87,68 @@ function parseEncouragement(raw: string): EncouragementResult {
   }
 }
 
+// ─── Hebrew mock fixtures ─────────────────────────────────────────────────
+const MOCK_ENCOURAGEMENT_HE: Record<string, EncouragementResult> = {
+  "Animals & Nature": {
+    growth_tip:
+      "הילד שלכם הוא מוצלח אמיתי עם בעלי חיים — האישיות שהוא מעביר בכל יצירה מראה אמפתיה ויכולת תצפית מדהימה. כדי להרחיב את הכישרון הזה, נסו אתגר 'יום רגשות של בעל חיים': בחרו בעל חיים אחד וצייר אותו שמח, מפחד ומופתע. איך נראה קנגורו מפוחד?",
+    encouragement_scripts: [
+      "אני אוהב/ת כמה שנשמה הנמר שיצרת — עבדת בסבלנות על כל פס וכל פס.",
+      "הלוויתן שלך נראה כאילו הוא יכול לזנק מתוך הדף! איך גרמת לו להיראות כל כך אמיתי?",
+      "אני רואה שהסתכלת בפנים של הפלמינגו וחשבת על איך הוא עומד. זה מה שאמנים אמיתיים עושים.",
+    ],
+  },
+  "Space & Planets": {
+    growth_tip:
+      "הדמיון של הילד שלכם מגיע עד הכוכבים! סצנות החלל החודש מראות סקרנות מדעית נפלאה ויצירתיות טהורה. נסו אתגר 'משימת חלל': תכננו חללית לכוכב קרח. איך תיראה ספינה שעוצבה רק לנסיעות לכוכבי קרח?",
+    encouragement_scripts: [
+      "אני אוהב/ת שהאסטרונאוט שלך נראה כאילו הוא מרחף — ממש חשבת על תחושת חוסר הכובד, לא רק על המראה.",
+      "איך ידעת לצייר את שבתאי עם הטבעות שלו כל כך מדויק? האם הסתכלת בתמונה?",
+      "לרקטה שלך יש כל כך הרבה פרטים. אני יכול/ה לראות שממש חשבת על איך היא עובדת.",
+    ],
+  },
+};
+
+const DEFAULT_ENCOURAGEMENT_HE: EncouragementResult = {
+  growth_tip:
+    "הילד שלכם פורח לאמן ביטויי נפלא — כל יצירה החודש הראתה ביטחון ויצירתיות חדשים. כדי לחגוג, נסו אתגר 'צייר מה שאתה שומע': נגנו שיר אהוב ובקשו מהם לצייר איך המוזיקה נראית. אין תשובה שגויה!",
+  encouragement_scripts: [
+    "אני אוהב/ת כמה צבעים השתמשת — זה מרגיש כאילו התמונה מלאה באנרגיה, בדיוק כמוך.",
+    "בזבזת כל כך הרבה זמן על זה — ראיתי אותך ממש חושב/ת על מה שרצית לצייר.",
+    "אני שם/שמה לב שאתה/את תמיד מנסה דברים חדשים ביצירות שלך. האומץ הזה הוא מה שהופך אותך לאמן/ית נהדר/ת.",
+  ],
+};
+
 // ─── Main export ──────────────────────────────────────────────────────────
 export async function generateEncouragement(
   analyses: ArtworkAnalysis[],
   topInterest: string,
   milestoneDetected: string,
-  childName?: string
+  childName?: string,
+  locale?: "en" | "he"
 ): Promise<EncouragementResult> {
   if (isMockMode()) {
     await new Promise((r) => setTimeout(r, 60));
-    // Find the closest matching mock, fall back to default
-    const result =
-      MOCK_ENCOURAGEMENT[topInterest] ??
-      Object.entries(MOCK_ENCOURAGEMENT).find(([key]) =>
-        topInterest.toLowerCase().includes(key.toLowerCase().split(" ")[0])
-      )?.[1] ??
-      DEFAULT_ENCOURAGEMENT;
+
+    let result: EncouragementResult;
+    if (locale === "he") {
+      result =
+        MOCK_ENCOURAGEMENT_HE[topInterest] ??
+        Object.entries(MOCK_ENCOURAGEMENT_HE).find(([key]) =>
+          topInterest.toLowerCase().includes(key.toLowerCase().split(" ")[0])
+        )?.[1] ??
+        DEFAULT_ENCOURAGEMENT_HE;
+    } else {
+      result =
+        MOCK_ENCOURAGEMENT[topInterest] ??
+        Object.entries(MOCK_ENCOURAGEMENT).find(([key]) =>
+          topInterest.toLowerCase().includes(key.toLowerCase().split(" ")[0])
+        )?.[1] ??
+        DEFAULT_ENCOURAGEMENT;
+    }
 
     console.log(
-      `[MOCK] generateEncouragement: top interest "${topInterest}" → growth tip generated`
+      `[MOCK] generateEncouragement: top interest "${topInterest}" → growth tip generated (locale: ${locale ?? "en"})`
     );
     return result;
   }
@@ -115,7 +158,8 @@ export async function generateEncouragement(
     analyses,
     topInterest,
     milestoneDetected,
-    childName
+    childName,
+    locale
   );
 
   const response = await client.messages.create({

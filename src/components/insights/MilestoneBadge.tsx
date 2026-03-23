@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n/LocaleContext";
+
 interface Props {
   milestone: string;
   delay?: number;
@@ -11,6 +15,7 @@ const SPARKLES = [
 ];
 
 export function MilestoneBadge({ milestone, delay = 0 }: Props) {
+  const { t } = useLocale();
   if (!milestone) return null;
 
   return (
@@ -38,7 +43,6 @@ export function MilestoneBadge({ milestone, delay = 0 }: Props) {
             </svg>
           </div>
 
-          {/* CSS sparkle stars */}
           {SPARKLES.map((s, i) => (
             <span
               key={i}
@@ -60,7 +64,7 @@ export function MilestoneBadge({ milestone, delay = 0 }: Props) {
 
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-widest text-amber-500 mb-1">
-            Milestone Moment
+            {t("cards.milestone.title")}
           </p>
           <p
             className="text-[15px] font-medium text-[#2d1f14] leading-relaxed"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import type { ThematicFocus } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
 
@@ -30,12 +31,19 @@ function ArtworkModal({
   artworks: ArtworkAnalysis[];
   onClose: () => void;
 }) {
+  const { t } = useLocale();
   const keyword = subject.toLowerCase().split("/")[0].trim();
   const filtered = artworks.filter(
     (a) =>
       a.main_subjects.some((s) => s.toLowerCase().includes(keyword)) ||
-      a.ai_tags.some((t) => t.toLowerCase().includes(keyword))
+      a.ai_tags.some((tag) => tag.toLowerCase().includes(keyword))
   );
+
+  const taggedCount = filtered.length;
+  const taggedLabel =
+    taggedCount === 1
+      ? `1 artwork tagged`
+      : `${taggedCount} artworks tagged`;
 
   return (
     <div
@@ -46,7 +54,6 @@ function ArtworkModal({
         className="bg-white rounded-3xl w-full max-w-lg max-h-[85vh] overflow-hidden shadow-2xl animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         style={{
-          /* iOS safe area */
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
@@ -58,14 +65,12 @@ function ArtworkModal({
             >
               {subject.replace(/_/g, " ")}
             </h3>
-            <p className="text-sm text-[#9b8474]">
-              {filtered.length} artwork{filtered.length !== 1 ? "s" : ""} tagged
-            </p>
+            <p className="text-sm text-[#9b8474]">{taggedLabel}</p>
           </div>
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-full bg-[#f5f0eb] flex items-center justify-center hover:bg-[#ede8e2] transition-colors"
-            aria-label="Close"
+            aria-label={t("close")}
           >
             <svg className="w-4 h-4 text-[#5c4a38]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -76,7 +81,7 @@ function ArtworkModal({
         <div className="overflow-y-auto p-6 space-y-4 scrollbar-hide" style={{ maxHeight: "calc(85vh - 92px)" }}>
           {filtered.length === 0 ? (
             <p className="text-sm text-[#9b8474] text-center py-8">
-              No artwork images available for this subject yet.
+              {t("cards.heatmap.modal.empty")}
             </p>
           ) : (
             filtered.map((artwork) => (
@@ -97,9 +102,9 @@ function ArtworkModal({
                     </p>
                   )}
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {artwork.ai_tags.slice(0, 3).map((t) => (
-                      <span key={t} className="px-2 py-0.5 rounded-full bg-white border border-[#f0ede9] text-[10px] text-[#9b8474]">
-                        {t.replace(/_/g, " ")}
+                    {artwork.ai_tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 rounded-full bg-white border border-[#f0ede9] text-[10px] text-[#9b8474]">
+                        {tag.replace(/_/g, " ")}
                       </span>
                     ))}
                   </div>
@@ -115,6 +120,7 @@ function ArtworkModal({
 
 export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
   const [activeSubject, setActiveSubject] = useState<string | null>(null);
+  const { t } = useLocale();
 
   const subjects = Object.entries(thematicFocus?.subjects ?? {}).sort((a, b) => b[1] - a[1]);
   const maxVal = subjects[0]?.[1] ?? 1;
@@ -123,13 +129,12 @@ export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
     <>
       <div className="card animate-slide-up" style={{ animationDelay: `${delay}ms` }}>
         <p className="text-xs font-semibold uppercase tracking-widest text-[#9b8474] mb-5">
-          Interest Heatmap
+          {t("cards.heatmap.title")}
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 min-h-[160px] py-2">
           {subjects.map(([subject, value], i) => {
             const color = BUBBLE_COLORS[i % BUBBLE_COLORS.length];
-            // Mobile minimum 64px for touch targets; desktop minimum 52px
             const baseSize = Math.round(52 + (value / maxVal) * 68);
             const pct = Math.round(value * 100);
 
@@ -144,16 +149,12 @@ export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff7657]/50
                            touch-manipulation"
                 style={{
-                  /* Two animations on one element: pop-in entry → idle breathe */
                   animation: [
                     `popIn 0.42s cubic-bezier(0.34,1.56,0.64,1) ${delay + i * 65}ms both`,
                     `breathe 3.5s ease-in-out ${delay + i * 65 + 500}ms infinite`,
                   ].join(", "),
-                  /* Pause breathing while hovered/focused — CSS can't do this inline,
-                     handled by hover:scale-110 visually dominating */
                   width: baseSize,
                   height: baseSize,
-                  /* Minimum 64px touch target on mobile */
                   minWidth: "clamp(64px, 100%, 120px)",
                   maxWidth: baseSize + 8,
                   background: color.bg,
@@ -176,7 +177,7 @@ export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
         </div>
 
         <p className="text-center text-xs text-[#9b8474] mt-4">
-          Tap a bubble to see the artwork
+          {t("cards.heatmap.tapHint")}
         </p>
       </div>
 

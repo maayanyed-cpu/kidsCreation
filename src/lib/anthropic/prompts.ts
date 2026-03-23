@@ -24,9 +24,19 @@ export function buildArtworkAnalysisPrompt(): string {
 
 // ─── Monthly aggregation prompt ─────────────────────────────────────────────
 
+const HEBREW_AGGREGATION_NOTE = `
+LANGUAGE REQUIREMENT: Write all free-text content in Hebrew (right-to-left).
+The following fields must remain in English (they are enum values used by the app):
+- "sentiment": must be exactly one of: Joyful, Calm, Energetic, Expressive, Dreamy, Curious, Bold, Warm, Playful
+- "line_confidence": must be exactly one of: Tentative, Developing, Confident, Expressive
+- "top_interest": must be 2-4 words in English (e.g. "Animals & Nature", "Space & Planets")
+All other text fields — milestone_detected, subject_complexity, thematic_focus subject keys, tags — must be in Hebrew.
+`;
+
 export function buildAggregationPrompt(
   analyses: ArtworkAnalysis[],
-  childName: string = "this child"
+  childName: string = "this child",
+  locale: "en" | "he" = "en"
 ): string {
   const analysisJson = analyses.map((a) => ({
     subjects: a.main_subjects,
@@ -37,7 +47,7 @@ export function buildAggregationPrompt(
   }));
 
   return `You are a warm child development specialist writing a monthly creative growth report. Below are analyses of ${analyses.length} artworks created by ${childName} this month.
-
+${locale === "he" ? HEBREW_AGGREGATION_NOTE : ""}
 ARTWORK ANALYSES:
 ${JSON.stringify(analysisJson, null, 2)}
 
@@ -66,11 +76,16 @@ The thematic_focus.subjects values must sum to 1.0. Include 3-6 subjects.`;
 
 // ─── Encouragement + growth tip prompt ──────────────────────────────────────
 
+const HEBREW_ENCOURAGEMENT_NOTE = `
+LANGUAGE REQUIREMENT: Write all content in Hebrew (right-to-left). Both "growth_tip" and all three "encouragement_scripts" must be in Hebrew.
+`;
+
 export function buildEncouragementPrompt(
   analyses: ArtworkAnalysis[],
   topInterest: string,
   milestoneDetected: string,
-  childName: string = "your child"
+  childName: string = "your child",
+  locale: "en" | "he" = "en"
 ): string {
   const highlights = analyses.slice(0, 5).map((a) => ({
     subjects: a.main_subjects.slice(0, 2),
@@ -79,6 +94,7 @@ export function buildEncouragementPrompt(
   }));
 
   return `You are writing the most encouraging part of a child's Creative Growth Report for their parent.
+${locale === "he" ? HEBREW_ENCOURAGEMENT_NOTE : ""}
 
 TOP INTEREST THIS MONTH: ${topInterest}
 MILESTONE: ${milestoneDetected}

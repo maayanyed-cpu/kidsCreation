@@ -1,3 +1,6 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import type { VisualEvolution } from "@/types/insights";
 
 const CONFIDENCE_STEPS = ["Tentative", "Developing", "Confident", "Expressive"];
@@ -15,6 +18,7 @@ interface Props {
 }
 
 export function CreativeEvolution({ evolution, delay = 0 }: Props) {
+  const { t } = useLocale();
   const diversityPct = Math.min(100, Math.max(0, evolution.color_diversity));
   const confidenceIndex = CONFIDENCE_STEPS.indexOf(evolution.line_confidence);
 
@@ -23,8 +27,8 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
       className="card animate-slide-up"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <p className="text-xs font-semibold uppercase tracking-widest text-[#9ca3af] mb-5">
-        Creative Evolution
+      <p className="text-xs font-semibold uppercase tracking-widest text-[#9b8474] mb-5">
+        {t("cards.evolution.title")}
       </p>
 
       <div className="space-y-6">
@@ -33,7 +37,9 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-lg">🎨</span>
-              <span className="text-sm font-semibold text-[#374151]">Colour Palette</span>
+              <span className="text-sm font-semibold text-[#374151]">
+                {t("cards.evolution.palette")}
+              </span>
             </div>
             <span className="text-sm font-bold text-[#7c5cbf]">{diversityPct}%</span>
           </div>
@@ -48,10 +54,10 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
           </div>
           <p className="text-xs text-[#9ca3af] mt-1">
             {diversityPct < 40
-              ? "Focused palette — a signature style is forming"
+              ? t("cards.evolution.palette.low")
               : diversityPct < 70
-              ? "Expanding palette — exploring the full colour wheel"
-              : "Rich, diverse palette — the world in full colour"}
+              ? t("cards.evolution.palette.mid")
+              : t("cards.evolution.palette.high")}
           </p>
         </div>
 
@@ -59,7 +65,9 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-lg">✏️</span>
-            <span className="text-sm font-semibold text-[#374151]">Line Confidence</span>
+            <span className="text-sm font-semibold text-[#374151]">
+              {t("cards.evolution.lineConf")}
+            </span>
           </div>
           <div className="flex gap-2">
             {CONFIDENCE_STEPS.map((step, i) => (
@@ -75,7 +83,7 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
                       CONFIDENCE_COLOR[step] ?? "bg-violet-400 text-white"
                     }`}
                   >
-                    {step}
+                    {t(`lineConf.${step}`)}
                   </span>
                 )}
               </div>
@@ -87,10 +95,14 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-lg">🌟</span>
-            <span className="text-sm font-semibold text-[#374151]">Subject Complexity</span>
+            <span className="text-sm font-semibold text-[#374151]">
+              {t("cards.evolution.complexity")}
+            </span>
           </div>
           <div className="bg-[#faf9f7] rounded-2xl px-4 py-3 border border-[#f3f4f6]">
-            <p className="text-sm font-medium text-[#374151]">{evolution.subject_complexity}</p>
+            <p className="text-sm font-medium text-[#374151]">
+              {evolution.subject_complexity}
+            </p>
           </div>
         </div>
       </div>

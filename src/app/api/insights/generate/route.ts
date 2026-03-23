@@ -24,12 +24,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { childId, childName } = body as { childId: string; childName?: string };
+  const { childId, childName, locale } = body as {
+    childId: string;
+    childName?: string;
+    locale?: "en" | "he";
+  };
 
   // NOTE: This call can take 30–120s with the live Vision API.
   // In production, move to a background job (e.g. Vercel's `waitUntil` or a
   // queue) to avoid gateway timeouts. In mock mode it completes in < 1s.
-  const result = await analyzeMonthlyProgress(childId, childName);
+  const result = await analyzeMonthlyProgress(childId, childName, undefined, locale);
 
   if (!result.ok) {
     return NextResponse.json(

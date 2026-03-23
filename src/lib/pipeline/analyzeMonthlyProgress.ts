@@ -84,7 +84,8 @@ function mapDbArtwork(row: {
 export async function analyzeMonthlyProgress(
   childId: string,
   childName?: string,
-  periodOverride?: string
+  periodOverride?: string,
+  locale?: "en" | "he"
 ): Promise<PipelineResult> {
   const period = periodOverride ?? formatPeriod();
   const since = thirtyDaysAgo();
@@ -162,14 +163,15 @@ export async function analyzeMonthlyProgress(
   }
 
   // ── Step 5: Aggregate into monthly insight fields ────────────────────────
-  const aggregation = await aggregateAnalyses(analyses, childName);
+  const aggregation = await aggregateAnalyses(analyses, childName, locale);
 
   // ── Step 6: Generate encouragement + growth tip ──────────────────────────
   const encouragement = await generateEncouragement(
     analyses,
     aggregation.top_interest,
     aggregation.milestone_detected,
-    childName
+    childName,
+    locale
   );
 
   // ── Step 7: Upsert Insights record ──────────────────────────────────────

@@ -100,22 +100,48 @@ function parseAggregation(raw: string): AggregationResult {
   }
 }
 
+// ─── Hebrew mock ──────────────────────────────────────────────────────────
+function getMockAggregationHe(analyses: ArtworkAnalysis[]): AggregationResult {
+  const base = getMockAggregation(analyses);
+  return {
+    ...base,
+    // sentiment + top_interest stay in English (enum values / emoji lookup)
+    milestone_detected:
+      "החודש הראה קפיצה נהדרת בחשיבה נרטיבית — במקום לצייר נושאים בודדים, היצירות החלו לספר סיפורים עם דמויות מרובות, סביבות ופעולות משתמעות. זוהי אבן דרך התפתחותית משמעותית.",
+    tags: ["סיפור_סיפורים", "בעלי_חיים", "צבעים_בוהקים", "דמיון", "עבודת_פרטים"],
+    visual_evolution: {
+      ...base.visual_evolution,
+      subject_complexity: "דמויות מרובות עם הקשר סביבתי",
+    },
+    thematic_focus: {
+      subjects: {
+        "בעלי חיים": 0.38,
+        "משפחה": 0.22,
+        "פנטזיה": 0.18,
+        "טבע": 0.12,
+        "מופשט": 0.1,
+      },
+    },
+  };
+}
+
 // ─── Main export ──────────────────────────────────────────────────────────
 export async function aggregateAnalyses(
   analyses: ArtworkAnalysis[],
-  childName?: string
+  childName?: string,
+  locale?: "en" | "he"
 ): Promise<AggregationResult> {
   if (isMockMode()) {
     await new Promise((r) => setTimeout(r, 80));
-    const result = getMockAggregation(analyses);
+    const result = locale === "he" ? getMockAggregationHe(analyses) : getMockAggregation(analyses);
     console.log(
-      `[MOCK] aggregateAnalyses: ${analyses.length} artworks → top interest: "${result.top_interest}"`
+      `[MOCK] aggregateAnalyses: ${analyses.length} artworks → top interest: "${result.top_interest}" (locale: ${locale ?? "en"})`
     );
     return result;
   }
 
   const client = getAnthropicClient();
-  const prompt = buildAggregationPrompt(analyses, childName);
+  const prompt = buildAggregationPrompt(analyses, childName, locale);
 
   const response = await client.messages.create({
     model: VISION_MODEL,

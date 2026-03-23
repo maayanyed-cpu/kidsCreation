@@ -1,9 +1,15 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n/LocaleContext";
+
 interface Props {
   tip: string;
   delay?: number;
 }
 
 export function GrowthTipCard({ tip, delay = 0 }: Props) {
+  const { t } = useLocale();
+
   // Split at the first sentence to style celebrate/stretch differently
   const firstPeriod = tip.indexOf(". ");
   const celebrate = firstPeriod > -1 ? tip.slice(0, firstPeriod + 1) : tip;
@@ -54,7 +60,7 @@ export function GrowthTipCard({ tip, delay = 0 }: Props) {
                 className="text-xs font-semibold uppercase tracking-widest mb-2"
                 style={{ color: "#15803d" }}
               >
-                Growth Tip — Celebrate &amp; Stretch
+                {t("cards.tip.title")}
               </p>
 
               <p className="text-[15px] font-semibold text-[#2d1f14] leading-relaxed">

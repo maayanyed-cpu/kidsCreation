@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Insight } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import { MonthSelector } from "./MonthSelector";
 import { ArtistObsessionCard } from "./ArtistObsessionCard";
 import { InterestHeatmap } from "./InterestHeatmap";
@@ -16,11 +17,43 @@ interface Props {
   initialInsight: Insight | null;
   childId: string;
   childName: string;
+  childNameHe?: string;
   availablePeriods: string[];
   allArtworks: ArtworkAnalysis[];
 }
 
-// ── Empty state ───────────────────────────────────────────────────────────────
+// ── Locale toggle ──────────────────────────────────────────────────────────
+function LocaleToggle() {
+  const { locale, setLocale } = useLocale();
+  return (
+    <div className="flex items-center gap-1 rounded-full bg-[#f5f0eb] p-1">
+      <button
+        onClick={() => setLocale("en")}
+        className={`px-2 py-0.5 rounded-full text-sm transition-all duration-150 ${
+          locale === "en"
+            ? "bg-white shadow-sm font-semibold text-[#2d1f14]"
+            : "text-[#9b8474] hover:text-[#2d1f14]"
+        }`}
+        aria-label="Switch to English"
+      >
+        🇺🇸
+      </button>
+      <button
+        onClick={() => setLocale("he")}
+        className={`px-2 py-0.5 rounded-full text-sm transition-all duration-150 ${
+          locale === "he"
+            ? "bg-white shadow-sm font-semibold text-[#2d1f14]"
+            : "text-[#9b8474] hover:text-[#2d1f14]"
+        }`}
+        aria-label="Switch to Hebrew"
+      >
+        🇮🇱
+      </button>
+    </div>
+  );
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────
 function EmptyState({
   childName,
   artworkCount,
@@ -30,12 +63,12 @@ function EmptyState({
   artworkCount: number;
   error: string | null;
 }) {
+  const { t } = useLocale();
   const needed = Math.max(0, 5 - artworkCount);
   const pct = Math.min(100, (artworkCount / 5) * 100);
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in px-4">
-      {/* Paintbrush SVG illustration */}
       <svg
         width="96"
         height="96"
@@ -45,15 +78,10 @@ function EmptyState({
         aria-hidden="true"
       >
         <circle cx="48" cy="48" r="48" fill="#fff1ed" />
-        {/* Brush handle */}
         <rect x="54" y="18" width="10" height="38" rx="5" fill="#fbbf24" transform="rotate(35 54 18)" />
-        {/* Brush ferrule */}
         <rect x="43" y="48" width="12" height="8" rx="2" fill="#9ca3af" transform="rotate(35 43 48)" />
-        {/* Bristles */}
         <ellipse cx="38" cy="62" rx="7" ry="11" fill="#ff7657" transform="rotate(35 38 62)" />
-        {/* Paint drip */}
         <circle cx="30" cy="74" r="4" fill="#ff7657" opacity="0.5" />
-        {/* Stars */}
         <circle cx="72" cy="28" r="3" fill="#fbbf24" />
         <circle cx="20" cy="36" r="2" fill="#0f9d8f" />
         <circle cx="66" cy="66" r="2.5" fill="#a78bfa" />
@@ -63,25 +91,31 @@ function EmptyState({
         <>
           <h2 className="text-xl font-bold text-[#2d1f14] mb-2">{error}</h2>
           <p className="text-sm text-[#9b8474] max-w-xs leading-relaxed">
-            Try selecting a different month above.
+            {t("period.label")}
           </p>
         </>
       ) : (
         <>
-          <h2 className="text-xl font-bold text-[#2d1f14] mb-3" style={{ fontFamily: "var(--font-display)" }}>
-            Keep creating! 🎨
+          <h2
+            className="text-xl font-bold text-[#2d1f14] mb-3"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {t("empty.title")}
           </h2>
           <p className="text-sm text-[#9b8474] max-w-xs leading-relaxed mb-6">
             {artworkCount === 0
-              ? `We need 5 artworks from ${childName} to unlock the Creative Growth Report.`
-              : `${needed} more artwork${needed !== 1 ? "s" : ""} to unlock ${childName}'s Creative Growth Report.`}
+              ? t("empty.noneYet", { name: childName })
+              : t("empty.needed", {
+                  needed,
+                  s: needed !== 1 ? "s" : "",
+                  name: childName,
+                })}
           </p>
 
-          {/* Progress bar */}
           <div className="w-56">
             <div className="flex justify-between text-xs font-semibold text-[#9b8474] mb-2">
-              <span>{artworkCount} uploaded</span>
-              <span>5 needed</span>
+              <span>{artworkCount} {t("empty.uploaded")}</span>
+              <span>{t("empty.needed5")}</span>
             </div>
             <div className="h-3 bg-[#f0ede9] rounded-full overflow-hidden">
               <div
@@ -119,9 +153,11 @@ export function ParentInsightDashboard({
   initialInsight,
   childId,
   childName,
+  childNameHe,
   availablePeriods,
   allArtworks,
 }: Props) {
+  const { t, locale, dir } = useLocale();
   const [insight, setInsight] = useState<Insight | null>(initialInsight);
   const [selectedPeriod, setSelectedPeriod] = useState(
     initialInsight?.analysis_period ?? availablePeriods[0] ?? ""
@@ -129,7 +165,8 @@ export function ParentInsightDashboard({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Count artworks for the selected period (client-side filter by month label)
+  const displayName = locale === "he" && childNameHe ? childNameHe : childName;
+
   const artworksForPeriod = allArtworks.filter((a) => {
     const label = new Date(a.analysis_date).toLocaleDateString("en-US", {
       month: "long",
@@ -163,50 +200,51 @@ export function ParentInsightDashboard({
     <div
       className="min-h-screen"
       style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 40%, #f0faf8 100%)" }}
+      dir={dir}
     >
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* ── Header ───────────────────────────────────────────────────────── */}
       <header className="animate-fade-in sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
-          <div className="min-w-0">
+        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <h1
               className="text-xl font-bold text-[#2d1f14] truncate tracking-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {childName}&rsquo;s Creative Growth Report
+              {t("header.title", { name: displayName })}
             </h1>
             <p className="text-xs text-[#9b8474] mt-0.5 hidden sm:block">
-              AI-powered developmental insights · FamilyVibe Labs
+              {t("header.subtitle")}
             </p>
           </div>
 
-          {availablePeriods.length > 0 && (
-            <MonthSelector
-              periods={availablePeriods}
-              selected={selectedPeriod}
-              onChange={handlePeriodChange}
-              loading={isPending}
-            />
-          )}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <LocaleToggle />
+            {availablePeriods.length > 0 && (
+              <MonthSelector
+                periods={availablePeriods}
+                selected={selectedPeriod}
+                onChange={handlePeriodChange}
+                loading={isPending}
+              />
+            )}
+          </div>
         </div>
       </header>
 
-      {/* ── Body ───────────────────────────────────────────────────────────── */}
+      {/* ── Body ─────────────────────────────────────────────────────────── */}
       <main
         className="max-w-3xl mx-auto px-4 sm:px-6 py-8"
         style={{ paddingBottom: "calc(2rem + env(safe-area-inset-bottom))" }}
       >
         {isPending ? (
-          /* Skeleton cards exactly match the real card shapes */
           <SkeletonDashboard />
         ) : !insight ? (
-          /* Empty / error state */
           <EmptyState
-            childName={childName}
+            childName={displayName}
             artworkCount={artworksForPeriod.length}
             error={error}
           />
         ) : (
-          /* Dashboard cards — key forces re-mount + re-animation on period change */
           <div key={selectedPeriod} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <ArtistObsessionCard insight={insight} delay={0} />
             <InterestHeatmap
@@ -228,9 +266,9 @@ export function ParentInsightDashboard({
         )}
       </main>
 
-      {/* ── Footer ─────────────────────────────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────────────────────────────── */}
       <footer className="text-center pb-8 text-xs text-[#c4b5a5] animate-fade-in">
-        Made with ❤️ by FamilyVibe Labs · Powered by Claude 3.5 Sonnet
+        {t("footer")}
       </footer>
     </div>
   );

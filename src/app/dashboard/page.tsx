@@ -1,12 +1,14 @@
 import { prisma } from "@/lib/db/prisma";
 import { mapInsight } from "@/lib/db/insightMapper";
 import { deserialize } from "@/lib/db/serialization";
+import { LocaleProvider } from "@/lib/i18n/LocaleContext";
 import { ParentInsightDashboard } from "@/components/insights/ParentInsightDashboard";
 import type { ArtworkAnalysis } from "@/types/artwork";
 
 // Hardcoded for now — in production, derive from the authenticated session.
 const CHILD_ID = "child_001";
 const CHILD_NAME = "Zohar";
+const CHILD_NAME_HE = "זוהר";
 
 async function getLatestInsight() {
   const raw = await prisma.insights.findFirst({
@@ -52,12 +54,15 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <ParentInsightDashboard
-      initialInsight={initialInsight}
-      childId={CHILD_ID}
-      childName={CHILD_NAME}
-      availablePeriods={periods}
-      allArtworks={artworks}
-    />
+    <LocaleProvider>
+      <ParentInsightDashboard
+        initialInsight={initialInsight}
+        childId={CHILD_ID}
+        childName={CHILD_NAME}
+        childNameHe={CHILD_NAME_HE}
+        availablePeriods={periods}
+        allArtworks={artworks}
+      />
+    </LocaleProvider>
   );
 }
