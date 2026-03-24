@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import type { Child } from "@/types/child";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { ageTag } from "@/lib/age";
 
 interface Props {
   children: Child[];
@@ -19,6 +20,7 @@ export function ChildSwitcher({ children, selectedChildId }: Props) {
       {children.map((child) => {
         const isSelected = child.id === selectedChildId;
         const name = locale === "he" && child.name_he ? child.name_he : child.name;
+        const age = ageTag(child.date_of_birth);
         return (
           <button
             key={child.id}
@@ -31,7 +33,7 @@ export function ChildSwitcher({ children, selectedChildId }: Props) {
             aria-current={isSelected ? "true" : undefined}
           >
             <span>{child.avatar_emoji}</span>
-            <span>{name}</span>
+            <span>{name} {age}</span>
           </button>
         );
       })}

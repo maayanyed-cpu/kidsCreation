@@ -37,7 +37,7 @@ async function main() {
       name_he: "אראד",
       avatar_emoji: "⚡",
       share_code: "arad-x1k9",
-      date_of_birth: new Date("2017-06-15"), // ~age 8-9
+      date_of_birth: new Date("2016-01-15"), // ~age 10
     },
     {
       id: "child_002",

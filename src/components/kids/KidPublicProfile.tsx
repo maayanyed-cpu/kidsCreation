@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FollowerSignupModal } from "@/components/social/FollowerSignupModal";
 import { ReactionBar } from "@/components/social/ReactionBar";
 import { CommentSection } from "@/components/social/CommentSection";
+import { formatAge } from "@/lib/age";
 
 const SENTIMENT_EMOJI: Record<string, string> = {
   Joyful: "😄", Calm: "😌", Energetic: "⚡", Dreamy: "✨",
@@ -20,7 +21,7 @@ interface ArtworkPreview {
 }
 
 interface Props {
-  child: { id: string; name: string; avatar_emoji: string };
+  child: { id: string; name: string; avatar_emoji: string; date_of_birth: string | null };
   shareCode: string;
   artworks: ArtworkPreview[];
 }
@@ -78,6 +79,7 @@ export function KidPublicProfile({ child, shareCode, artworks }: Props) {
           >
             {child.avatar_emoji} {child.name}&apos;s Creations
           </h1>
+          <p className="text-xs text-[#9b8474] mt-0.5">{formatAge(child.date_of_birth)}</p>
           <button
             onClick={handleFollowClick}
             className="px-4 py-2 rounded-full text-xs font-bold transition-all"

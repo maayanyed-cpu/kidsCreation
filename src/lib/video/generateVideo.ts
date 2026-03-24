@@ -25,6 +25,7 @@ export interface VideoConfig {
   type: "monthly" | "yearly";
   childName: string;
   childEmoji: string;
+  childAge?: string; // "Age 3" or "גיל 3"
   period: string; // "March 2026" or "2026"
   artworks: VideoSlide[];
   stats: VideoStats;
@@ -173,7 +174,10 @@ function renderTitleCard(ctx: CanvasRenderingContext2D, config: VideoConfig, alp
     ? `היצירות של ${config.childName}`
     : `${config.childName}'s Creations`;
   drawCenteredText(ctx, title, H / 2, titleFont, DARK);
-  drawCenteredText(ctx, config.period, H / 2 + 50, "500 22px system-ui, sans-serif", MUTED);
+  const subtitle = config.childAge
+    ? `${config.period} · ${config.childAge}`
+    : config.period;
+  drawCenteredText(ctx, subtitle, H / 2 + 50, "500 22px system-ui, sans-serif", MUTED);
   ctx.globalAlpha = 1;
 }
 

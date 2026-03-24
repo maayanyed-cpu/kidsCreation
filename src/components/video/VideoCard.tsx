@@ -5,10 +5,12 @@ import { HighlightVideoModal } from "./HighlightVideoModal";
 import type { VideoConfig, VideoStats } from "@/lib/video/generateVideo";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import type { Insight } from "@/types/insights";
+import { formatAge } from "@/lib/age";
 
 interface Props {
   childName: string;
   childEmoji: string;
+  childDob?: string | Date | null;
   artworks: ArtworkAnalysis[];
   insight: Insight | null;
   period: string;
@@ -18,6 +20,7 @@ interface Props {
 export function VideoCard({
   childName,
   childEmoji,
+  childDob,
   artworks,
   insight,
   period,
@@ -49,6 +52,7 @@ export function VideoCard({
     type: "monthly",
     childName,
     childEmoji,
+    childAge: formatAge(childDob, locale),
     period,
     artworks: periodArtworks.map((a) => ({
       imageUrl: a.image_url,

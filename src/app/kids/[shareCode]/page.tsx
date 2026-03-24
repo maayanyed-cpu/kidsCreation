@@ -11,7 +11,7 @@ export default async function KidProfilePage({ params }: PageProps) {
 
   const child = await prisma.child.findUnique({
     where: { share_code: shareCode },
-    select: { id: true, name: true, avatar_emoji: true, share_code: true },
+    select: { id: true, name: true, avatar_emoji: true, share_code: true, date_of_birth: true },
   });
   if (!child || !child.share_code) notFound();
 
@@ -30,7 +30,7 @@ export default async function KidProfilePage({ params }: PageProps) {
 
   return (
     <KidPublicProfile
-      child={{ id: child.id, name: child.name, avatar_emoji: child.avatar_emoji }}
+      child={{ id: child.id, name: child.name, avatar_emoji: child.avatar_emoji, date_of_birth: child.date_of_birth?.toISOString() ?? null }}
       shareCode={child.share_code}
       artworks={artworks}
     />

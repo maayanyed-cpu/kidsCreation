@@ -5,6 +5,7 @@ import type { Insight } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import type { Child } from "@/types/child";
+import { formatAge } from "@/lib/age";
 import { MonthSelector } from "./MonthSelector";
 import { ShareModal } from "./ShareModal";
 import { ChildSwitcher } from "./ChildSwitcher";
@@ -223,6 +224,10 @@ export function ParentInsightDashboard({
               >
                 {t("header.title", { name: displayName })}
               </h1>
+              <p className="text-xs text-[#9b8474] mt-0.5">
+                {allChildren.find((c) => c.id === selectedChildId)?.avatar_emoji}{" "}
+                {formatAge(allChildren.find((c) => c.id === selectedChildId)?.date_of_birth, locale as "en" | "he")}
+              </p>
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -295,6 +300,7 @@ export function ParentInsightDashboard({
             <VideoCard
               childName={displayName}
               childEmoji={allChildren.find((c) => c.id === selectedChildId)?.avatar_emoji ?? "🎨"}
+              childDob={allChildren.find((c) => c.id === selectedChildId)?.date_of_birth}
               artworks={allArtworks}
               insight={insight}
               period={selectedPeriod}
