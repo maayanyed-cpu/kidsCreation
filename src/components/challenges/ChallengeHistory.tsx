@@ -109,7 +109,7 @@ export function ChallengeHistory({ challenges, children, streaks }: Props) {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#9b8474] mb-2">{weekLabel}</p>
+                    <p className="text-xs text-[#9b8474] mb-2" suppressHydrationWarning>{weekLabel}</p>
 
                     {/* Child completion badges */}
                     <div className="flex items-center gap-2">

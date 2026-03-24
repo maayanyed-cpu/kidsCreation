@@ -102,7 +102,7 @@ export function CommentSection({ artworkId, canDelete = false }: Props) {
                   <span className="text-xs font-semibold text-[#2d1f14]">
                     {c.author_name}
                   </span>
-                  <span className="text-[10px] text-[#c4b5a8]">{timeAgo(c.created_at)}</span>
+                  <span className="text-[10px] text-[#c4b5a8]" suppressHydrationWarning>{timeAgo(c.created_at)}</span>
                   {canDelete && (
                     <button
                       onClick={() => handleDelete(c.id)}

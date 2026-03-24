@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateTag, translateInterest, translateSubject } from "@/lib/i18n/contentTranslations";
 import type { Insight } from "@/types/insights";
 
 // Warmer, more contextually accurate sentiment palette
@@ -45,7 +46,7 @@ interface Props {
 }
 
 export function ArtistObsessionCard({ insight, delay = 0 }: Props) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const s = SENTIMENT_STYLE[insight.sentiment] ?? DEFAULT_STYLE;
   const topEmoji = INTEREST_EMOJI[insight.top_interest] ?? "🌟";
 
@@ -53,13 +54,7 @@ export function ArtistObsessionCard({ insight, delay = 0 }: Props) {
   const topSubject = Object.entries(subjects).sort((a, b) => b[1] - a[1])[0];
   const topPct = topSubject ? Math.round(topSubject[1] * 100) : null;
 
-  // Translate top_interest for display; keep raw value for emoji lookup
-  const displayInterest = t(`interest.${insight.top_interest}`);
-  // If key was returned as-is (no translation), fall back to raw value
-  const interestLabel =
-    displayInterest === `interest.${insight.top_interest}`
-      ? insight.top_interest
-      : displayInterest;
+  const interestLabel = translateInterest(insight.top_interest, locale);
 
   return (
     <div
@@ -96,7 +91,8 @@ export function ArtistObsessionCard({ insight, delay = 0 }: Props) {
           </h2>
           {topPct !== null && (
             <p className="mt-1 text-sm font-semibold" style={{ color: s.accent }}>
-              {topSubject?.[0]} — {topPct}% of artwork this month
+              {translateSubject(topSubject?.[0] ?? "", locale)} — {topPct}%{" "}
+              {locale === "he" ? "מהיצירות החודש" : "of artwork this month"}
             </p>
           )}
         </div>
@@ -110,7 +106,7 @@ export function ArtistObsessionCard({ insight, delay = 0 }: Props) {
               key={tag}
               className="px-3 py-1 rounded-full bg-white/70 text-xs font-medium text-[#5c4a38] border border-white/80"
             >
-              {tag.replace(/_/g, " ")}
+              {translateTag(tag, locale)}
             </span>
           ))}
         </div>

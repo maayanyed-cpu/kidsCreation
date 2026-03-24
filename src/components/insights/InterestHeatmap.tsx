@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateSubject, translateTag } from "@/lib/i18n/contentTranslations";
 import type { ThematicFocus } from "@/types/insights";
 import type { ArtworkAnalysis } from "@/types/artwork";
 
@@ -31,7 +32,7 @@ function ArtworkModal({
   artworks: ArtworkAnalysis[];
   onClose: () => void;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const keyword = subject.toLowerCase().split("/")[0].trim();
   const filtered = artworks.filter(
     (a) =>
@@ -63,7 +64,7 @@ function ArtworkModal({
               className="text-lg font-bold text-[#2d1f14] capitalize"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {subject.replace(/_/g, " ")}
+              {translateSubject(subject, locale)}
             </h3>
             <p className="text-sm text-[#9b8474]">{taggedLabel}</p>
           </div>
@@ -104,7 +105,7 @@ function ArtworkModal({
                   <div className="flex flex-wrap gap-1 mt-2">
                     {artwork.ai_tags.slice(0, 3).map((tag) => (
                       <span key={tag} className="px-2 py-0.5 rounded-full bg-white border border-[#f0ede9] text-[10px] text-[#9b8474]">
-                        {tag.replace(/_/g, " ")}
+                        {translateTag(tag, locale)}
                       </span>
                     ))}
                   </div>
@@ -120,7 +121,7 @@ function ArtworkModal({
 
 export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
   const [activeSubject, setActiveSubject] = useState<string | null>(null);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
 
   const subjects = Object.entries(thematicFocus?.subjects ?? {}).sort((a, b) => b[1] - a[1]);
   const maxVal = subjects[0]?.[1] ?? 1;
@@ -142,8 +143,8 @@ export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
               <button
                 key={subject}
                 onClick={() => setActiveSubject(subject)}
-                title={`${subject.replace(/_/g, " ")} — ${pct}%`}
-                aria-label={`View ${subject.replace(/_/g, " ")} artworks`}
+                title={`${translateSubject(subject, locale)} — ${pct}%`}
+                aria-label={translateSubject(subject, locale)}
                 className="flex flex-col items-center justify-center rounded-full border-2 cursor-pointer
                            transition-transform duration-200 hover:scale-110 active:scale-95
                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff7657]/50
@@ -169,7 +170,7 @@ export function InterestHeatmap({ thematicFocus, artworks, delay = 0 }: Props) {
                   className="font-semibold text-center leading-tight px-1 mt-0.5 capitalize"
                   style={{ fontSize: Math.max(9, baseSize * 0.12) }}
                 >
-                  {subject.replace(/_/g, " ").replace(/ \/ /g, "/")}
+                  {translateSubject(subject, locale)}
                 </span>
               </button>
             );

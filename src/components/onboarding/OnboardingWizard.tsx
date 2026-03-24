@@ -463,6 +463,7 @@ export function OnboardingWizard({ userId, initialName = "" }: Props) {
                   value={childDob}
                   onChange={(e) => setChildDob(e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
+                  suppressHydrationWarning
                   className="w-full rounded-2xl border border-[#e8e0d8] bg-[#fdf8f4] px-4 py-3 text-sm text-[#2d1f14] focus:border-[#ff7657] focus:outline-none focus:ring-2 focus:ring-[#ff7657]/20"
                 />
               </div>

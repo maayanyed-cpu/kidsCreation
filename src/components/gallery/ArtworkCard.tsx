@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { ArtworkAnalysis } from "@/types/artwork";
+import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateTag } from "@/lib/i18n/contentTranslations";
 
 const SENTIMENT_EMOJI: Record<string, string> = {
   Joyful: "😄",
@@ -15,21 +17,20 @@ const SENTIMENT_EMOJI: Record<string, string> = {
   Playful: "🎉",
 };
 
-function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 interface Props {
   artwork: ArtworkAnalysis;
   childParam?: string;
 }
 
 export function ArtworkCard({ artwork, childParam }: Props) {
+  const { locale } = useLocale();
   const sentimentEmoji = SENTIMENT_EMOJI[artwork.emotional_tone] ?? "🎨";
   const backParam = childParam ? `?child=${childParam}` : "";
+
+  const formattedDate = new Date(artwork.analysis_date).toLocaleDateString(
+    locale === "he" ? "he-IL" : "en-US",
+    { month: "short", day: "numeric" }
+  );
 
   return (
     <Link
@@ -56,8 +57,8 @@ export function ArtworkCard({ artwork, childParam }: Props) {
       </div>
 
       {/* Card body */}
-      <div className="p-3">
-        <p className="text-xs text-[#9b8474] mb-2">{formatDate(artwork.analysis_date)}</p>
+      <div className="p-3" dir={locale === "he" ? "rtl" : "ltr"}>
+        <p className="text-xs text-[#9b8474] mb-2" suppressHydrationWarning>{formattedDate}</p>
 
         {/* Tags */}
         {artwork.ai_tags.length > 0 && (
@@ -67,7 +68,7 @@ export function ArtworkCard({ artwork, childParam }: Props) {
                 key={tag}
                 className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#f5f0eb] text-[#5c4a38]"
               >
-                {tag.replace(/_/g, " ")}
+                {translateTag(tag, locale)}
               </span>
             ))}
           </div>

@@ -53,7 +53,7 @@ export function FeedView({ items }: Props) {
             <div className="flex items-center gap-2 px-4 pt-3 pb-2">
               <span className="text-lg">{item.child.avatar_emoji}</span>
               <span className="text-sm font-semibold text-[#2d1f14]">{item.child.name}</span>
-              <span className="text-xs text-[#c4b5a8] ms-auto">
+              <span className="text-xs text-[#c4b5a8] ms-auto" suppressHydrationWarning>
                 {new Date(item.analysis_date).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",

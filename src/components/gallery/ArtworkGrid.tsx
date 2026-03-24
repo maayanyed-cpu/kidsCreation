@@ -109,6 +109,7 @@ export function ArtworkGrid({ artworks, allChildren, selectedChildId }: Props) {
             <section key={month}>
               <h2
                 className="text-sm font-bold text-[#5c4a38] mb-3 uppercase tracking-wider"
+                suppressHydrationWarning
               >
                 {month}
               </h2>

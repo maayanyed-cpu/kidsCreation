@@ -33,7 +33,7 @@ export function ChildSwitcher({ children, selectedChildId }: Props) {
             aria-current={isSelected ? "true" : undefined}
           >
             <span>{child.avatar_emoji}</span>
-            <span>{name} {age}</span>
+            <span suppressHydrationWarning>{name} {age}</span>
           </button>
         );
       })}

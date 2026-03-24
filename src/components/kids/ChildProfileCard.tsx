@@ -67,6 +67,7 @@ export function ChildProfileCard({ child, stats, recentArtworks }: Props) {
           <span
             className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold"
             style={{ background: "#fff1ed", color: "#ff7657" }}
+            suppressHydrationWarning
           >
             {age}
           </span>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateTag } from "@/lib/i18n/contentTranslations";
 
 // Map CSS named colors to display well — use them directly as CSS values
 const COLOR_FALLBACK = "#c4b5a5";
@@ -69,7 +70,7 @@ export function ArtworkDetail({
             {t("gallery.back")}
           </Link>
           <div className="flex-1" />
-          <span className="text-xs text-[#9b8474]">{childName} · {formattedDate}</span>
+          <span className="text-xs text-[#9b8474]" suppressHydrationWarning>{childName} · {formattedDate}</span>
         </div>
       </header>
 
@@ -141,7 +142,7 @@ export function ArtworkDetail({
                 key={tag}
                 className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#f5f0eb] text-[#5c4a38]"
               >
-                #{tag.replace(/_/g, " ")}
+                #{translateTag(tag, locale)}
               </span>
             ))}
           </div>

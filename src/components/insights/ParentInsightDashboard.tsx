@@ -224,7 +224,7 @@ export function ParentInsightDashboard({
               >
                 {t("header.title", { name: displayName })}
               </h1>
-              <p className="text-xs text-[#9b8474] mt-0.5">
+              <p className="text-xs text-[#9b8474] mt-0.5" suppressHydrationWarning>
                 {allChildren.find((c) => c.id === selectedChildId)?.avatar_emoji}{" "}
                 {formatAge(allChildren.find((c) => c.id === selectedChildId)?.date_of_birth, locale as "en" | "he")}
               </p>

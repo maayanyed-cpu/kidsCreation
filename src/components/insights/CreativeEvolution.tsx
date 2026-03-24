@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateComplexity } from "@/lib/i18n/contentTranslations";
 import type { VisualEvolution } from "@/types/insights";
 
 const CONFIDENCE_STEPS = ["Tentative", "Developing", "Confident", "Expressive"];
@@ -18,7 +19,7 @@ interface Props {
 }
 
 export function CreativeEvolution({ evolution, delay = 0 }: Props) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const diversityPct = Math.min(100, Math.max(0, evolution.color_diversity));
   const confidenceIndex = CONFIDENCE_STEPS.indexOf(evolution.line_confidence);
 
@@ -101,7 +102,7 @@ export function CreativeEvolution({ evolution, delay = 0 }: Props) {
           </div>
           <div className="bg-[#faf9f7] rounded-2xl px-4 py-3 border border-[#f3f4f6]">
             <p className="text-sm font-medium text-[#374151]">
-              {evolution.subject_complexity}
+              {translateComplexity(evolution.subject_complexity, locale)}
             </p>
           </div>
         </div>

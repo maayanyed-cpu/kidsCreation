@@ -79,7 +79,7 @@ export function KidPublicProfile({ child, shareCode, artworks }: Props) {
           >
             {child.avatar_emoji} {child.name}&apos;s Creations
           </h1>
-          <p className="text-xs text-[#9b8474] mt-0.5">{formatAge(child.date_of_birth)}</p>
+          <p className="text-xs text-[#9b8474] mt-0.5" suppressHydrationWarning>{formatAge(child.date_of_birth)}</p>
           <button
             onClick={handleFollowClick}
             className="px-4 py-2 rounded-full text-xs font-bold transition-all"
@@ -145,7 +145,7 @@ export function KidPublicProfile({ child, shareCode, artworks }: Props) {
               <div className="p-5 space-y-5">
                 {/* Close button + date */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-[#9b8474]">
+                  <span className="text-xs text-[#9b8474]" suppressHydrationWarning>
                     {new Date(selectedArtwork.analysis_date).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
