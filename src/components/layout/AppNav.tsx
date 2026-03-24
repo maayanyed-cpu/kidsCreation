@@ -17,6 +17,14 @@ function useActiveRoute() {
   return "dashboard";
 }
 
+function useShowNav() {
+  const pathname = usePathname();
+  return (
+    !pathname.startsWith("/auth/") &&
+    !pathname.startsWith("/onboarding")
+  );
+}
+
 // ── Bottom bar (mobile) ──────────────────────────────────────────────────────
 function BottomBar() {
   const active = useActiveRoute();
@@ -113,6 +121,8 @@ function Sidebar() {
 
 // ── Export: renders both, CSS controls which is visible ──────────────────────
 export function AppNav() {
+  const show = useShowNav();
+  if (!show) return null;
   return (
     <>
       <Sidebar />

@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import "./globals.css";
 import { AppNav } from "@/components/layout/AppNav";
 import { LocaleProvider } from "@/lib/i18n/LocaleContext";
+import { Providers } from "@/components/layout/Providers";
+import { auth } from "@/auth";
 
 // Warm, rounded body font — friendly and parent-appropriate
 const nunito = Nunito({
@@ -36,20 +38,23 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
   return (
     <html
       lang="en"
       className={`${nunito.variable} ${fraunces.variable} ${heebo.variable} h-full`}
     >
       <body className="min-h-full bg-[#fdf8f4] md:pl-56">
-        <LocaleProvider>
-          {children}
-          {/* AppNav uses usePathname/useSearchParams — needs Suspense boundary */}
-          <Suspense>
-            <AppNav />
-          </Suspense>
-        </LocaleProvider>
+        <Providers session={session}>
+          <LocaleProvider>
+            {children}
+            {/* AppNav uses usePathname/useSearchParams — needs Suspense boundary */}
+            <Suspense>
+              <AppNav />
+            </Suspense>
+          </LocaleProvider>
+        </Providers>
       </body>
     </html>
   );
