@@ -5,15 +5,17 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 
 const NAV_ITEMS = [
-  { key: "dashboard", href: "/dashboard", emoji: "📊" },
-  { key: "gallery",   href: "/gallery",   emoji: "🎨" },
-  { key: "upload",    href: "/upload",    emoji: "➕" },
+  { key: "dashboard",   href: "/dashboard",   emoji: "📊" },
+  { key: "gallery",     href: "/gallery",     emoji: "🎨" },
+  { key: "upload",      href: "/upload",      emoji: "➕" },
+  { key: "challenges",  href: "/challenges",  emoji: "🏆" },
 ] as const;
 
 function useActiveRoute() {
   const pathname = usePathname();
-  if (pathname.startsWith("/gallery")) return "gallery";
-  if (pathname.startsWith("/upload"))  return "upload";
+  if (pathname.startsWith("/gallery"))    return "gallery";
+  if (pathname.startsWith("/upload"))     return "upload";
+  if (pathname.startsWith("/challenges")) return "challenges";
   return "dashboard";
 }
 

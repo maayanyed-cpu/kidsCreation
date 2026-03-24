@@ -117,6 +117,33 @@ model Comment {
   deleted_at  DateTime?
 }
 
+model Challenge {
+  id             String                @id @default(cuid())
+  title          String
+  title_he       String
+  description    String
+  description_he String
+  emoji          String
+  category       String                // "colors" | "shapes" | "nature" | "family" | "imagination" | "technique"
+  difficulty     String                // "easy" | "medium" | "adventure"
+  week_start     DateTime
+  week_end       DateTime
+  active         Boolean               @default(true)
+  created_at     DateTime              @default(now())
+  submissions    ChallengeSubmission[]
+}
+
+model ChallengeSubmission {
+  id           String    @id @default(cuid())
+  challenge_id String
+  child_id     String
+  artwork_id   String
+  created_at   DateTime  @default(now())
+  challenge    Challenge @relation(fields: [challenge_id], references: [id])
+
+  @@unique([challenge_id, child_id])
+}
+
 model Insights {
   id                    String   @id @default(cuid())
   child_id              String

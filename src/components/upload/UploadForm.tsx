@@ -123,10 +123,12 @@ interface UploadResponse {
 interface Props {
   children: Child[];
   defaultChildId: string;
+  challengeId?: string;
+  challengeTitle?: string;
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export function UploadForm({ children, defaultChildId }: Props) {
+export function UploadForm({ children, defaultChildId, challengeId, challengeTitle }: Props) {
   const { t, locale } = useLocale();
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>({ name: "idle" });
@@ -170,6 +172,7 @@ export function UploadForm({ children, defaultChildId }: Props) {
     fd.append("file", file);
     fd.append("childId", selectedChildId);
     if (title.trim()) fd.append("title", title.trim());
+    if (challengeId) fd.append("challengeId", challengeId);
 
     const xhr = new XMLHttpRequest();
 

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db/prisma";
 import { mapInsight } from "@/lib/db/insightMapper";
 import { mapArtwork } from "@/lib/db/artworkMapper";
 import { ParentInsightDashboard } from "@/components/insights/ParentInsightDashboard";
+import { ChallengeCard } from "@/components/challenges/ChallengeCard";
+import { getCurrentChallenge, getChallengeStatus, daysRemaining } from "@/lib/challenges";
 import type { ArtworkAnalysis } from "@/types/artwork";
 import type { Child } from "@/types/child";
 
@@ -65,16 +67,62 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     allChildren.find((c) => c.id === DEFAULT_CHILD_ID) ??
     allChildren[0];
 
+  // Fetch current challenge + submission status
+  const challenge = await getCurrentChallenge();
+  let challengeStatus: { completed: boolean; artworkId: string | null } | null = null;
+  let challengeThumb: string | null = null;
+  if (challenge) {
+    challengeStatus = await getChallengeStatus(challenge.id, selectedChild.id);
+    if (challengeStatus.artworkId) {
+      const art = await prisma.artworkAnalysis.findUnique({
+        where: { artwork_id: challengeStatus.artworkId },
+        select: { thumb_url: true, image_url: true },
+      });
+      challengeThumb = art?.thumb_url ?? art?.image_url ?? null;
+    }
+  }
+
   return (
-    <ParentInsightDashboard
-      initialInsight={initialInsight}
-      childId={selectedChild.id}
-      childName={selectedChild.name}
-      childNameHe={selectedChild.name_he ?? undefined}
-      availablePeriods={periods}
-      allArtworks={artworks}
-      allChildren={allChildren}
-      selectedChildId={selectedChild.id}
-    />
+    <>
+      {/* Weekly challenge banner — rendered above the dashboard */}
+      {challenge && (
+        <div
+          className="md:pl-0"
+          style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 40%, #f0faf8 100%)" }}
+        >
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-4">
+            <ChallengeCard
+              challenge={{
+                id: challenge.id,
+                title: challenge.title,
+                title_he: challenge.title_he,
+                description: challenge.description,
+                description_he: challenge.description_he,
+                emoji: challenge.emoji,
+                category: challenge.category,
+                difficulty: challenge.difficulty,
+                week_end: challenge.week_end.toISOString(),
+              }}
+              childId={selectedChild.id}
+              childName={selectedChild.name}
+              completed={challengeStatus?.completed ?? false}
+              submissionThumb={challengeThumb}
+              daysLeft={daysRemaining(challenge.week_end)}
+            />
+          </div>
+        </div>
+      )}
+
+      <ParentInsightDashboard
+        initialInsight={initialInsight}
+        childId={selectedChild.id}
+        childName={selectedChild.name}
+        childNameHe={selectedChild.name_he ?? undefined}
+        availablePeriods={periods}
+        allArtworks={artworks}
+        allChildren={allChildren}
+        selectedChildId={selectedChild.id}
+      />
+    </>
   );
 }

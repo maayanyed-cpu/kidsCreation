@@ -545,6 +545,111 @@ async function main() {
   }
 
   console.log(`Created ${insights.length} Insights records`);
+
+  // ─── Weekly Challenges (8 weeks) ──────────────────────────────────────────
+
+  const challenges = [
+    {
+      title: "Rainbow World",
+      title_he: "עולם הקשת",
+      description: "Draw something using every color of the rainbow! Can you fit them all in one picture?",
+      description_he: "ציירו משהו עם כל צבעי הקשת! אפשר להכניס את כולם לתמונה אחת?",
+      emoji: "🌈",
+      category: "colors",
+      difficulty: "easy",
+      week_start: new Date("2026-02-09"),
+      week_end: new Date("2026-02-15T23:59:59"),
+    },
+    {
+      title: "My Happy Place",
+      title_he: "המקום המאושר שלי",
+      description: "Draw the place where you feel happiest. Is it your room? The park? Grandma's house?",
+      description_he: "ציירו את המקום שבו אתם הכי שמחים. החדר שלכם? הפארק? אצל סבתא?",
+      emoji: "🏠",
+      category: "family",
+      difficulty: "easy",
+      week_start: new Date("2026-02-16"),
+      week_end: new Date("2026-02-22T23:59:59"),
+    },
+    {
+      title: "Impossible Animals",
+      title_he: "חיות בלתי אפשריות",
+      description: "Invent an animal that doesn't exist! What does it eat? Where does it live? Give it a name!",
+      description_he: "המציאו חיה שלא קיימת! מה היא אוכלת? איפה היא גרה? תנו לה שם!",
+      emoji: "🦄",
+      category: "imagination",
+      difficulty: "medium",
+      week_start: new Date("2026-02-23"),
+      week_end: new Date("2026-03-01T23:59:59"),
+    },
+    {
+      title: "Texture Hunt",
+      title_he: "ציד המרקמים",
+      description: "Create art using something besides a pencil — fingers, sponges, leaves, anything goes!",
+      description_he: "צרו אומנות עם משהו שהוא לא עיפרון — אצבעות, ספוגים, עלים, הכל מותר!",
+      emoji: "👐",
+      category: "technique",
+      difficulty: "adventure",
+      week_start: new Date("2026-03-02"),
+      week_end: new Date("2026-03-08T23:59:59"),
+    },
+    {
+      title: "Dream Drawing",
+      title_he: "ציור חלום",
+      description: "Draw something from a dream you had. Was it funny? Magical? A little weird? Even better!",
+      description_he: "ציירו משהו מחלום שחלמתם. מצחיק? קסום? קצת מוזר? עוד יותר טוב!",
+      emoji: "🌙",
+      category: "imagination",
+      difficulty: "medium",
+      week_start: new Date("2026-03-09"),
+      week_end: new Date("2026-03-15T23:59:59"),
+    },
+    {
+      title: "Food Art",
+      title_he: "אמנות האוכל",
+      description: "Draw your favorite meal — make it look so delicious everyone gets hungry!",
+      description_he: "ציירו את האוכל האהוב עליכם — שזה ייראה כל כך טעים שכולם ירעבו!",
+      emoji: "🍕",
+      category: "colors",
+      difficulty: "easy",
+      week_start: new Date("2026-03-16"),
+      week_end: new Date("2026-03-22T23:59:59"),
+    },
+    {
+      title: "Future Me",
+      title_he: "אני בעתיד",
+      description: "Draw yourself 20 years from now. What will you look like? What will you be doing?",
+      description_he: "ציירו את עצמכם בעוד 20 שנה. איך תיראו? מה תעשו?",
+      emoji: "🤖",
+      category: "imagination",
+      difficulty: "medium",
+      week_start: new Date("2026-03-23"),
+      week_end: new Date("2026-03-29T23:59:59"),
+    },
+    {
+      title: "Underwater Adventure",
+      title_he: "הרפתקה מתחת למים",
+      description: "What lives at the bottom of the ocean? Show us the creatures, the colors, the world down there!",
+      description_he: "מה חי בתחתית האוקיינוס? הראו לנו את היצורים, הצבעים, העולם שלמטה!",
+      emoji: "🌊",
+      category: "nature",
+      difficulty: "medium",
+      week_start: new Date("2026-03-30"),
+      week_end: new Date("2026-04-05T23:59:59"),
+    },
+  ];
+
+  for (const ch of challenges) {
+    // Use a deterministic ID based on the title for upsert
+    const id = `ch_${ch.title.toLowerCase().replace(/[^a-z]/g, "").slice(0, 12)}`;
+    await prisma.challenge.upsert({
+      where: { id },
+      update: ch,
+      create: { id, ...ch },
+    });
+  }
+
+  console.log(`Created ${challenges.length} Challenge records`);
   console.log("Seed complete!");
 }
 

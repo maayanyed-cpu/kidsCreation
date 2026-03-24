@@ -137,6 +137,16 @@ export async function POST(request: Request) {
     },
   });
 
+  // ── Challenge submission (if uploading for a challenge) ───────────────────
+  const challengeId = formData.get("challengeId") as string | null;
+  if (challengeId) {
+    try {
+      await prisma.challengeSubmission.create({
+        data: { challenge_id: challengeId, child_id: childId, artwork_id: artworkId },
+      });
+    } catch { /* unique constraint — already submitted */ }
+  }
+
   // ── Count artworks this month ─────────────────────────────────────────────
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
