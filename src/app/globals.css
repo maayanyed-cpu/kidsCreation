@@ -122,6 +122,14 @@ body {
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* Reaction button bounce */
+@keyframes reactionPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
 /* Onboarding wizard — slide transitions */
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(40px); }

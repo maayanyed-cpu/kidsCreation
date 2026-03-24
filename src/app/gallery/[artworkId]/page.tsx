@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db/prisma";
 import { mapArtwork } from "@/lib/db/artworkMapper";
 import { deserialize } from "@/lib/db/serialization";
 import { ArtworkDetail } from "@/components/gallery/ArtworkDetail";
+import { ReactionBar } from "@/components/social/ReactionBar";
+import { CommentSection } from "@/components/social/CommentSection";
 import type { ArtworkAnalysis } from "@/types/artwork";
 
 async function getArtwork(artworkId: string): Promise<ArtworkAnalysis | null> {
@@ -49,6 +51,12 @@ export default async function ArtworkDetailPage({ params, searchParams }: PagePr
       encouragementScripts={encouragementScripts}
       reportPeriod={insightRow?.analysis_period ?? null}
       backChildParam={childParam ?? artwork.child_id}
-    />
+    >
+      {/* Social: reactions + comments */}
+      <div className="card space-y-5">
+        <ReactionBar artworkId={artwork.artwork_id} />
+        <CommentSection artworkId={artwork.artwork_id} canDelete />
+      </div>
+    </ArtworkDetail>
   );
 }

@@ -15,6 +15,7 @@ interface Props {
   encouragementScripts: string[];
   reportPeriod: string | null;
   backChildParam?: string;
+  children?: React.ReactNode;
 }
 
 export function ArtworkDetail({
@@ -23,6 +24,7 @@ export function ArtworkDetail({
   encouragementScripts,
   reportPeriod,
   backChildParam,
+  children: socialSection,
 }: Props) {
   const { t, locale } = useLocale();
   const router = useRouter();
@@ -167,6 +169,9 @@ export function ArtworkDetail({
             </ul>
           </div>
         )}
+
+        {/* Social: reactions + comments */}
+        {socialSection}
 
         {/* Delete */}
         <div className="pt-2">
