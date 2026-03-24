@@ -15,6 +15,7 @@ import { MilestoneBadge } from "./MilestoneBadge";
 import { EncouragementScripts } from "./EncouragementScripts";
 import { GrowthTipCard } from "./GrowthTipCard";
 import { SkeletonDashboard } from "./SkeletonCard";
+import { VideoCard } from "@/components/video/VideoCard";
 
 interface Props {
   initialInsight: Insight | null;
@@ -289,6 +290,16 @@ export function ParentInsightDashboard({
             {insight.growth_tip && (
               <GrowthTipCard tip={insight.growth_tip} delay={400} />
             )}
+
+            {/* Monthly Highlight Video */}
+            <VideoCard
+              childName={displayName}
+              childEmoji={allChildren.find((c) => c.id === selectedChildId)?.avatar_emoji ?? "🎨"}
+              artworks={allArtworks}
+              insight={insight}
+              period={selectedPeriod}
+              locale={locale as "en" | "he"}
+            />
           </div>
         )}
       </main>
