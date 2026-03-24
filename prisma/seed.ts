@@ -11,11 +11,28 @@ function s(arr: string[]): string {
 async function main() {
   console.log("Seeding database with mock data...");
 
+  // ─── Test parent user ────────────────────────────────────────────────────────
+
+  const testParent = await prisma.user.upsert({
+    where: { email: "test@example.com" },
+    update: {},
+    create: {
+      id: "user_test_001",
+      email: "test@example.com",
+      name: "Test Parent",
+      onboarding_complete: true,
+      locale: "en",
+    },
+  });
+
+  console.log(`Upserted test parent: ${testParent.email}`);
+
   // ─── Children ────────────────────────────────────────────────────────────────
 
   const children = [
     {
       id: "child_001",
+      parent_id: testParent.id,
       name: "Arad",
       name_he: "אראד",
       avatar_emoji: "⚡",
@@ -23,6 +40,7 @@ async function main() {
     },
     {
       id: "child_002",
+      parent_id: testParent.id,
       name: "Noa",
       name_he: "נועה",
       avatar_emoji: "🌸",
@@ -30,6 +48,7 @@ async function main() {
     },
     {
       id: "child_003",
+      parent_id: testParent.id,
       name: "Zohar",
       name_he: "זוהר",
       avatar_emoji: "🦁",
@@ -40,7 +59,7 @@ async function main() {
   for (const child of children) {
     await prisma.child.upsert({
       where: { id: child.id },
-      update: child,
+      update: { parent_id: child.parent_id },
       create: child,
     });
   }
