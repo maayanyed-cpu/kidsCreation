@@ -5,6 +5,7 @@ import type { ArtworkAnalysis } from "@/types/artwork";
 import type { Child } from "@/types/child";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import { ChildSwitcher } from "@/components/insights/ChildSwitcher";
+import { ShareButton } from "@/components/social/ShareButton";
 import { ArtworkCard } from "./ArtworkCard";
 
 interface Props {
@@ -23,6 +24,7 @@ function formatMonthHeader(date: Date | string) {
 export function ArtworkGrid({ artworks, allChildren, selectedChildId }: Props) {
   const { t } = useLocale();
   const [sortMode, setSortMode] = useState<"newest" | "byMonth">("newest");
+  const selectedChild = allChildren.find((c) => c.id === selectedChildId);
 
   const sorted = [...artworks].sort(
     (a, b) => new Date(b.analysis_date).getTime() - new Date(a.analysis_date).getTime()
@@ -70,6 +72,17 @@ export function ArtworkGrid({ artworks, allChildren, selectedChildId }: Props) {
           </button>
         </div>
       </div>
+
+      {/* Share button */}
+      {selectedChild?.share_code && (
+        <div className="mb-4">
+          <ShareButton
+            childName={selectedChild.name}
+            childNameHe={selectedChild.name_he}
+            shareCode={selectedChild.share_code}
+          />
+        </div>
+      )}
 
       {/* Empty state */}
       {artworks.length === 0 && (

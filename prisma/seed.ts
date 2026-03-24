@@ -36,6 +36,7 @@ async function main() {
       name: "Arad",
       name_he: "אראד",
       avatar_emoji: "⚡",
+      share_code: "arad-x1k9",
       date_of_birth: new Date("2017-06-15"), // ~age 8-9
     },
     {
@@ -44,6 +45,7 @@ async function main() {
       name: "Noa",
       name_he: "נועה",
       avatar_emoji: "🌸",
+      share_code: "noa-m3p7",
       date_of_birth: new Date("2019-09-10"), // ~age 6.5, the gymnast
     },
     {
@@ -52,6 +54,7 @@ async function main() {
       name: "Zohar",
       name_he: "זוהר",
       avatar_emoji: "🦁",
+      share_code: "zohar-a7k2",
       date_of_birth: new Date("2023-03-15"), // ~age 3
     },
   ];
@@ -59,7 +62,7 @@ async function main() {
   for (const child of children) {
     await prisma.child.upsert({
       where: { id: child.id },
-      update: { parent_id: child.parent_id },
+      update: { parent_id: child.parent_id, share_code: child.share_code },
       create: child,
     });
   }

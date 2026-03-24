@@ -13,7 +13,12 @@ export default auth((req) => {
   const isPublicPath =
     nextUrl.pathname === "/" ||
     nextUrl.pathname.startsWith("/auth/") ||
-    nextUrl.pathname.startsWith("/api/auth/");
+    nextUrl.pathname.startsWith("/api/auth/") ||
+    nextUrl.pathname.startsWith("/kids/") ||
+    nextUrl.pathname.startsWith("/feed") ||
+    nextUrl.pathname.startsWith("/api/kids/") ||
+    nextUrl.pathname.startsWith("/api/artworks/") ||
+    nextUrl.pathname.startsWith("/api/follower/");
 
   if (!isAuthenticated && !isPublicPath) {
     const signInUrl = new URL("/auth/signin", nextUrl.origin);

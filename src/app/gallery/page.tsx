@@ -13,6 +13,7 @@ async function getAllChildren(): Promise<Child[]> {
     name: r.name,
     name_he: r.name_he,
     avatar_emoji: r.avatar_emoji,
+    share_code: r.share_code,
     date_of_birth: r.date_of_birth,
     created_at: r.created_at,
   }));

@@ -67,9 +67,54 @@ model Child {
   name          String
   name_he       String?
   avatar_emoji  String
+  share_code    String?   @unique
   date_of_birth DateTime?
   created_at    DateTime  @default(now())
   parent        User?     @relation(fields: [parent_id], references: [id])
+  follows       Follow[]
+}
+
+model Follower {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  name       String
+  created_at DateTime  @default(now())
+  follows    Follow[]
+}
+
+model Follow {
+  id               String    @id @default(cuid())
+  follower_id      String
+  child_id         String
+  created_at       DateTime  @default(now())
+  last_notified_at DateTime?
+  follower         Follower  @relation(fields: [follower_id], references: [id], onDelete: Cascade)
+  child            Child     @relation(fields: [child_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_id, child_id])
+}
+
+model Reaction {
+  id         String   @id @default(cuid())
+  artwork_id String
+  user_type  String   // "parent" | "follower"
+  user_id    String
+  emoji      String
+  created_at DateTime @default(now())
+
+  @@unique([artwork_id, user_type, user_id])
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  artwork_id  String
+  user_type   String    // "parent" | "follower"
+  user_id     String
+  author_name String
+  text        String
+  approved    Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  deleted_at  DateTime?
 }
 
 model Insights {

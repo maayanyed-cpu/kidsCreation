@@ -3,6 +3,7 @@ export interface Child {
   name: string;
   name_he?: string | null;
   avatar_emoji: string;
+  share_code?: string | null;
   date_of_birth?: Date | null;
   created_at: Date;
 }

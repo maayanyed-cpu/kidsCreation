@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
+import { generateShareCode } from "@/lib/shareCode";
 
 interface ChildInput {
   name: string;
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
         name: child.name.trim(),
         name_he: child.name_he?.trim() || null,
         avatar_emoji: child.avatarEmoji ?? "🦁",
+        share_code: generateShareCode(child.name),
         date_of_birth: child.dateOfBirth ? new Date(child.dateOfBirth) : null,
       },
     });
