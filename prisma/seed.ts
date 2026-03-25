@@ -8,6 +8,27 @@ function s(arr: string[]): string {
   return JSON.stringify(arr);
 }
 
+// Real children's artwork from Wikimedia Commons (CC-licensed)
+const KID_ART = [
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Barnebilde_tegning_med_sol_og_blomster.jpg/400px-Barnebilde_tegning_med_sol_og_blomster.jpg", // sun + flowers drawing
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Autistic_Child_Drawing_3_Friends.jpg/400px-Autistic_Child_Drawing_3_Friends.jpg", // stick figures / friends
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/A_tree_that_was_painted_by_year_6-7.jpg/400px-A_tree_that_was_painted_by_year_6-7.jpg", // painted tree
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Art_Gabrielle_6_soon.jpg/400px-Art_Gabrielle_6_soon.jpg", // 6yo artwork
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Art_of_Gabrielle_when_she_was_5.jpg/400px-Art_of_Gabrielle_when_she_was_5.jpg", // 5yo artwork
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Autoportrait_-_enfant_-_3_ans.jpeg/400px-Autoportrait_-_enfant_-_3_ans.jpeg", // 3yo self-portrait
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Barnetegninger_01.jpg/400px-Barnetegninger_01.jpg", // colorful crayon drawing
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Dessin_d_enfant.jpg/400px-Dessin_d_enfant.jpg", // child's drawing
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Dessin_efant.jpg/400px-Dessin_efant.jpg", // child's sketch
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Arbre_noel_dessin.jpg/400px-Arbre_noel_dessin.jpg", // Christmas tree drawing
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/A_childs_drawing_-_blomstereng_tegning.jpg/400px-A_childs_drawing_-_blomstereng_tegning.jpg", // flower meadow drawing
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/1624869955729_kajsa.jpg/400px-1624869955729_kajsa.jpg", // colorful kid art
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Barnetegninger_02.jpg/400px-Barnetegninger_02.jpg", // more crayon art
+];
+/** Cycle through the art pool deterministically */
+function kidArt(index: number): string {
+  return KID_ART[index % KID_ART.length];
+}
+
 async function main() {
   console.log("Seeding database with mock data...");
 
@@ -75,7 +96,7 @@ async function main() {
     {
       artwork_id: "art_arad_001",
       child_id: "child_001",
-      image_url: "https://picsum.photos/seed/arad1/400/300",
+      image_url: kidArt(0),
       analysis_date: new Date("2026-03-03"),
       predominant_colors: s(["blue", "orange", "red"]),
       main_subjects: s(["Brawl Stars character", "battle arena"]),
@@ -87,7 +108,7 @@ async function main() {
     {
       artwork_id: "art_arad_002",
       child_id: "child_001",
-      image_url: "https://picsum.photos/seed/arad2/400/300",
+      image_url: kidArt(1),
       analysis_date: new Date("2026-03-10"),
       predominant_colors: s(["green", "brown", "yellow"]),
       main_subjects: s(["soccer player", "goal", "crowd"]),
@@ -99,7 +120,7 @@ async function main() {
     {
       artwork_id: "art_arad_003",
       child_id: "child_001",
-      image_url: "https://picsum.photos/seed/arad3/400/300",
+      image_url: kidArt(2),
       analysis_date: new Date("2026-03-18"),
       predominant_colors: s(["black", "silver", "red"]),
       main_subjects: s(["robot warrior", "laser beams"]),
@@ -116,7 +137,7 @@ async function main() {
     {
       artwork_id: "art_noa_001",
       child_id: "child_002",
-      image_url: "https://picsum.photos/seed/noa1/400/300",
+      image_url: kidArt(3),
       analysis_date: new Date("2026-03-04"),
       predominant_colors: s(["pink", "purple", "gold"]),
       main_subjects: s(["gymnast on balance beam", "spotlight"]),
@@ -128,7 +149,7 @@ async function main() {
     {
       artwork_id: "art_noa_002",
       child_id: "child_002",
-      image_url: "https://picsum.photos/seed/noa2/400/300",
+      image_url: kidArt(4),
       analysis_date: new Date("2026-03-11"),
       predominant_colors: s(["teal", "pink", "white"]),
       main_subjects: s(["ballet dancer", "stage", "flowers"]),
@@ -140,7 +161,7 @@ async function main() {
     {
       artwork_id: "art_noa_003",
       child_id: "child_002",
-      image_url: "https://picsum.photos/seed/noa3/400/300",
+      image_url: kidArt(5),
       analysis_date: new Date("2026-03-19"),
       predominant_colors: s(["yellow", "orange", "green"]),
       main_subjects: s(["unicorn", "rainbow", "meadow"]),
@@ -157,7 +178,7 @@ async function main() {
     {
       artwork_id: "art_jan_001",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art1/400/300",
+      image_url: kidArt(6),
       analysis_date: new Date("2026-01-05"),
       predominant_colors: s(["red", "yellow", "blue"]),
       main_subjects: s(["lion", "sun"]),
@@ -169,7 +190,7 @@ async function main() {
     {
       artwork_id: "art_jan_002",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art2/400/300",
+      image_url: kidArt(7),
       analysis_date: new Date("2026-01-08"),
       predominant_colors: s(["orange", "yellow", "green"]),
       main_subjects: s(["giraffe", "trees"]),
@@ -181,7 +202,7 @@ async function main() {
     {
       artwork_id: "art_jan_003",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art3/400/300",
+      image_url: kidArt(8),
       analysis_date: new Date("2026-01-12"),
       predominant_colors: s(["purple", "pink", "white"]),
       main_subjects: s(["elephant", "flowers"]),
@@ -193,7 +214,7 @@ async function main() {
     {
       artwork_id: "art_jan_004",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art4/400/300",
+      image_url: kidArt(9),
       analysis_date: new Date("2026-01-15"),
       predominant_colors: s(["blue", "green", "grey"]),
       main_subjects: s(["whale", "ocean", "fish"]),
@@ -205,7 +226,7 @@ async function main() {
     {
       artwork_id: "art_jan_005",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art5/400/300",
+      image_url: kidArt(10),
       analysis_date: new Date("2026-01-19"),
       predominant_colors: s(["red", "orange", "black"]),
       main_subjects: s(["tiger", "stripes"]),
@@ -217,7 +238,7 @@ async function main() {
     {
       artwork_id: "art_jan_006",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art6/400/300",
+      image_url: kidArt(11),
       analysis_date: new Date("2026-01-22"),
       predominant_colors: s(["green", "brown", "yellow"]),
       main_subjects: s(["monkey", "tree", "bananas"]),
@@ -229,7 +250,7 @@ async function main() {
     {
       artwork_id: "art_jan_007",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art7/400/300",
+      image_url: kidArt(12),
       analysis_date: new Date("2026-01-28"),
       predominant_colors: s(["pink", "white", "black"]),
       main_subjects: s(["flamingo", "water"]),
@@ -244,7 +265,7 @@ async function main() {
     {
       artwork_id: "art_feb_001",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art8/400/300",
+      image_url: kidArt(13),
       analysis_date: new Date("2026-02-03"),
       predominant_colors: s(["red", "pink", "white"]),
       main_subjects: s(["family", "hearts", "house"]),
@@ -256,7 +277,7 @@ async function main() {
     {
       artwork_id: "art_feb_002",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art9/400/300",
+      image_url: kidArt(14),
       analysis_date: new Date("2026-02-07"),
       predominant_colors: s(["blue", "purple", "silver"]),
       main_subjects: s(["stars", "moon", "space"]),
@@ -268,7 +289,7 @@ async function main() {
     {
       artwork_id: "art_feb_003",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art10/400/300",
+      image_url: kidArt(15),
       analysis_date: new Date("2026-02-11"),
       predominant_colors: s(["yellow", "orange", "red"]),
       main_subjects: s(["self_portrait", "smile"]),
@@ -280,7 +301,7 @@ async function main() {
     {
       artwork_id: "art_feb_004",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art11/400/300",
+      image_url: kidArt(16),
       analysis_date: new Date("2026-02-14"),
       predominant_colors: s(["pink", "red", "gold"]),
       main_subjects: s(["mom", "flowers", "hearts"]),
@@ -292,7 +313,7 @@ async function main() {
     {
       artwork_id: "art_feb_005",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art12/400/300",
+      image_url: kidArt(17),
       analysis_date: new Date("2026-02-17"),
       predominant_colors: s(["green", "blue", "white"]),
       main_subjects: s(["dragon", "castle"]),
@@ -304,7 +325,7 @@ async function main() {
     {
       artwork_id: "art_feb_006",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art13/400/300",
+      image_url: kidArt(18),
       analysis_date: new Date("2026-02-21"),
       predominant_colors: s(["brown", "green", "blue"]),
       main_subjects: s(["dog", "park", "ball"]),
@@ -316,7 +337,7 @@ async function main() {
     {
       artwork_id: "art_feb_007",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art14/400/300",
+      image_url: kidArt(19),
       analysis_date: new Date("2026-02-25"),
       predominant_colors: s(["blue", "white", "silver"]),
       main_subjects: s(["robot", "buttons", "lights"]),
@@ -331,7 +352,7 @@ async function main() {
     {
       artwork_id: "art_mar_001",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art15/400/300",
+      image_url: kidArt(20),
       analysis_date: new Date("2026-03-02"),
       predominant_colors: s(["green", "yellow", "pink"]),
       main_subjects: s(["garden", "flowers", "butterfly"]),
@@ -343,7 +364,7 @@ async function main() {
     {
       artwork_id: "art_mar_002",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art16/400/300",
+      image_url: kidArt(21),
       analysis_date: new Date("2026-03-05"),
       predominant_colors: s(["orange", "blue", "white"]),
       main_subjects: s(["basketball_player", "court"]),
@@ -355,7 +376,7 @@ async function main() {
     {
       artwork_id: "art_mar_003",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art17/400/300",
+      image_url: kidArt(22),
       analysis_date: new Date("2026-03-09"),
       predominant_colors: s(["red", "blue", "yellow", "green"]),
       main_subjects: s(["game_characters", "battle", "arena"]),
@@ -367,7 +388,7 @@ async function main() {
     {
       artwork_id: "art_mar_004",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art18/400/300",
+      image_url: kidArt(23),
       analysis_date: new Date("2026-03-12"),
       predominant_colors: s(["teal", "purple", "gold"]),
       main_subjects: s(["mermaid", "ocean", "treasure"]),
@@ -379,7 +400,7 @@ async function main() {
     {
       artwork_id: "art_mar_005",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art19/400/300",
+      image_url: kidArt(24),
       analysis_date: new Date("2026-03-15"),
       predominant_colors: s(["brown", "green", "blue", "orange"]),
       main_subjects: s(["family_picnic", "trees", "food"]),
@@ -391,7 +412,7 @@ async function main() {
     {
       artwork_id: "art_mar_006",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art20/400/300",
+      image_url: kidArt(25),
       analysis_date: new Date("2026-03-18"),
       predominant_colors: s(["blue", "purple", "silver", "gold"]),
       main_subjects: s(["spaceship", "planets", "astronaut"]),
@@ -403,7 +424,7 @@ async function main() {
     {
       artwork_id: "art_mar_007",
       child_id: "child_003",
-      image_url: "https://picsum.photos/seed/art21/400/300",
+      image_url: kidArt(26),
       analysis_date: new Date("2026-03-21"),
       predominant_colors: s(["red", "orange", "blue", "green", "purple"]),
       main_subjects: s(["rainbow_city", "buildings", "people"]),
