@@ -3,6 +3,64 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
+// ── Background collage — scattered children's artwork at low opacity ──────────
+function ArtCollageBackground() {
+  // Positioned artwork "elements" rendered as colorful abstract shapes + emoji
+  // to evoke a wall of children's drawings without loading external images
+  const items = [
+    { emoji: "🌈", x: "5%",  y: "8%",  rotate: -12, size: 48, opacity: 0.12 },
+    { emoji: "🏠", x: "82%", y: "5%",  rotate: 8,   size: 40, opacity: 0.10 },
+    { emoji: "🌻", x: "15%", y: "75%", rotate: -5,  size: 44, opacity: 0.11 },
+    { emoji: "🦋", x: "90%", y: "70%", rotate: 15,  size: 36, opacity: 0.13 },
+    { emoji: "⭐", x: "70%", y: "20%", rotate: -20, size: 32, opacity: 0.09 },
+    { emoji: "🐱", x: "8%",  y: "40%", rotate: 10,  size: 42, opacity: 0.10 },
+    { emoji: "🌸", x: "45%", y: "85%", rotate: -8,  size: 38, opacity: 0.12 },
+    { emoji: "🚀", x: "75%", y: "45%", rotate: 22,  size: 34, opacity: 0.08 },
+    { emoji: "🎨", x: "30%", y: "12%", rotate: -15, size: 46, opacity: 0.11 },
+    { emoji: "🐶", x: "55%", y: "92%", rotate: 5,   size: 40, opacity: 0.10 },
+    { emoji: "☀️", x: "92%", y: "35%", rotate: -10, size: 50, opacity: 0.09 },
+    { emoji: "🌊", x: "20%", y: "55%", rotate: 12,  size: 36, opacity: 0.08 },
+    { emoji: "🦁", x: "60%", y: "15%", rotate: -18, size: 38, opacity: 0.10 },
+    { emoji: "❤️", x: "40%", y: "60%", rotate: 8,   size: 30, opacity: 0.11 },
+    { emoji: "🎵", x: "85%", y: "85%", rotate: -6,  size: 34, opacity: 0.09 },
+  ];
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
+      {/* Soft colored crayon-like strokes */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 300px 200px at 10% 20%, rgba(255,182,193,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 250px 250px at 85% 15%, rgba(173,216,230,0.07) 0%, transparent 70%),
+            radial-gradient(ellipse 350px 180px at 20% 80%, rgba(255,218,185,0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 200px 300px at 80% 75%, rgba(221,160,221,0.06) 0%, transparent 70%),
+            radial-gradient(ellipse 280px 220px at 50% 50%, rgba(144,238,144,0.05) 0%, transparent 70%)
+          `,
+        }}
+      />
+      {/* Scattered artwork emoji */}
+      {items.map((item, i) => (
+        <span
+          key={i}
+          className="absolute select-none"
+          style={{
+            left: item.x,
+            top: item.y,
+            fontSize: item.size,
+            opacity: item.opacity,
+            transform: `rotate(${item.rotate}deg)`,
+            filter: "blur(0.5px)",
+          }}
+        >
+          {item.emoji}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
@@ -28,18 +86,20 @@ export default function SignInPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="min-h-screen flex items-center justify-center px-4 relative"
       style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 50%, #f0faf8 100%)" }}
     >
+      <ArtCollageBackground />
+
       {/* Language toggle */}
       <button
         onClick={() => setLocale(locale === "en" ? "he" : "en")}
-        className="fixed top-4 end-4 text-xs font-medium text-[#9b8474] hover:text-[#5c4a38] transition-colors"
+        className="fixed top-4 end-4 text-xs font-medium text-[#9b8474] hover:text-[#5c4a38] transition-colors z-10"
       >
         {locale === "en" ? "עברית" : "English"}
       </button>
 
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm relative z-10">
         {/* Logo / wordmark */}
         <div className="text-center mb-8">
           <div className="text-4xl mb-3">🎨</div>
@@ -49,26 +109,48 @@ export default function SignInPage() {
           >
             {t.title}
           </h1>
-          <p className="mt-1 text-sm text-[#9b8474]">{t.subtitle}</p>
+          <p className="mt-2 text-sm text-[#9b8474] leading-relaxed max-w-xs mx-auto">
+            {t.subtitle}
+          </p>
         </div>
 
         {/* Card */}
         <div
-          className="rounded-3xl bg-white p-6"
+          className="rounded-3xl bg-white/95 backdrop-blur-sm p-6 relative"
           style={{
             boxShadow:
               "0 2px 4px rgba(45,31,20,0.06), 0 8px 32px rgba(45,31,20,0.08)",
           }}
           dir={locale === "he" ? "rtl" : "ltr"}
         >
+          {/* Security badge */}
+          <div
+            className="absolute -top-3 inset-x-0 flex justify-center"
+          >
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+              style={{
+                background: "linear-gradient(135deg, #f0fdf4, #ecfeff)",
+                color: "#15803d",
+                border: "1px solid #bbf7d0",
+                boxShadow: "0 2px 8px rgba(34,197,94,0.12)",
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              {t.badge}
+            </span>
+          </div>
+
           {emailSent ? (
-            <div className="text-center py-4">
+            <div className="text-center py-4 mt-2">
               <div className="text-3xl mb-3">✉️</div>
               <p className="font-semibold text-[#2d1f14]">{t.checkEmail}</p>
               <p className="text-sm text-[#9b8474] mt-1">{t.checkEmailSub}</p>
             </div>
           ) : (
-            <>
+            <div className="mt-3">
               {/* Google */}
               <button
                 onClick={() => handleProvider("google")}
@@ -132,7 +214,7 @@ export default function SignInPage() {
                   </button>
                 </>
               )}
-            </>
+            </div>
           )}
         </div>
 
@@ -168,7 +250,8 @@ function AppleIcon() {
 const TRANSLATIONS = {
   en: {
     title: "Kidz Creations",
-    subtitle: "Celebrate your child's art journey",
+    subtitle: "Turn the pile of drawings into lifelong memories.",
+    badge: "Protected Family Sanctuary",
     continueGoogle: "Continue with Google",
     continueApple: "Continue with Apple",
     or: "or",
@@ -181,7 +264,8 @@ const TRANSLATIONS = {
   },
   he: {
     title: "Kidz Creations",
-    subtitle: "חגגו את מסע היצירה של ילדכם",
+    subtitle: "הפכו את ערימת הציורים לזיכרונות לכל החיים.",
+    badge: "מרחב משפחתי מוגן",
     continueGoogle: "המשך עם Google",
     continueApple: "המשך עם Apple",
     or: "או",
