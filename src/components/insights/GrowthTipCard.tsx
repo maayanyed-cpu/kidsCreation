@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateGrowthTip } from "@/lib/i18n/insightTranslations";
 
 interface Props {
   tip: string;
@@ -8,12 +9,13 @@ interface Props {
 }
 
 export function GrowthTipCard({ tip, delay = 0 }: Props) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const displayTip = translateGrowthTip(tip, locale);
 
   // Split at the first sentence to style celebrate/stretch differently
-  const firstPeriod = tip.indexOf(". ");
-  const celebrate = firstPeriod > -1 ? tip.slice(0, firstPeriod + 1) : tip;
-  const stretch = firstPeriod > -1 ? tip.slice(firstPeriod + 2) : "";
+  const firstPeriod = displayTip.indexOf(". ");
+  const celebrate = firstPeriod > -1 ? displayTip.slice(0, firstPeriod + 1) : displayTip;
+  const stretch = firstPeriod > -1 ? displayTip.slice(firstPeriod + 2) : "";
 
   return (
     /* Outer: slide-up entry */

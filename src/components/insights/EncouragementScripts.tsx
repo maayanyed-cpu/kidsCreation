@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateScript } from "@/lib/i18n/insightTranslations";
 
 const CARD_STYLES = [
   { bg: "#faf5ff", border: "#ede9fe", numBg: "#ede9fe", numText: "#6d28d9" },
@@ -16,11 +17,12 @@ interface ScriptCardProps {
 
 function ScriptCard({ script, index }: ScriptCardProps) {
   const [copied, setCopied] = useState(false);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const style = CARD_STYLES[index % 3];
+  const displayText = translateScript(script, locale);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(script).then(() => {
+    navigator.clipboard.writeText(displayText).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -39,7 +41,7 @@ function ScriptCard({ script, index }: ScriptCardProps) {
           {index + 1}
         </span>
         <p className="text-sm text-[#374151] leading-relaxed flex-1">
-          &ldquo;{script}&rdquo;
+          &ldquo;{displayText}&rdquo;
         </p>
       </div>
 

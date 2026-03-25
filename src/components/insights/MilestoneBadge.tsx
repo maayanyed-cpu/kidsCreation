@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { translateMilestone } from "@/lib/i18n/insightTranslations";
 
 interface Props {
   milestone: string;
@@ -15,8 +16,9 @@ const SPARKLES = [
 ];
 
 export function MilestoneBadge({ milestone, delay = 0 }: Props) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   if (!milestone) return null;
+  const displayText = translateMilestone(milestone, locale);
 
   return (
     <div
@@ -70,7 +72,7 @@ export function MilestoneBadge({ milestone, delay = 0 }: Props) {
             className="text-[15px] font-medium text-[#2d1f14] leading-relaxed"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {milestone}
+            {displayText}
           </p>
         </div>
       </div>
