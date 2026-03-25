@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Fraunces, Heebo } from "next/font/google";
+import { Varela_Round, Rubik, Heebo } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { AppNav } from "@/components/layout/AppNav";
@@ -7,20 +7,19 @@ import { LocaleProvider } from "@/lib/i18n/LocaleContext";
 import { Providers } from "@/components/layout/Providers";
 import { auth } from "@/auth";
 
-// Warm, rounded body font — friendly and parent-appropriate
-const nunito = Nunito({
-  subsets: ["latin"],
+// Warm, rounded body font — friendly and organic
+const varelaRound = Varela_Round({
+  subsets: ["latin", "hebrew"],
   variable: "--font-body",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: "400",
   display: "swap",
 });
 
-// Distinctive display serif for the report title and hero headings
-const fraunces = Fraunces({
-  subsets: ["latin"],
+// Marker-like display font for headings
+const rubik = Rubik({
+  subsets: ["latin", "hebrew"],
   variable: "--font-display",
-  weight: ["400", "700", "900"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -43,13 +42,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en"
-      className={`${nunito.variable} ${fraunces.variable} ${heebo.variable} h-full`}
+      className={`${varelaRound.variable} ${rubik.variable} ${heebo.variable} h-full`}
     >
-      <body className="min-h-full bg-[#fdf8f4] md:pl-56">
+      <body className="min-h-full md:pl-60">
         <Providers session={session}>
           <LocaleProvider>
             {children}
-            {/* AppNav uses usePathname/useSearchParams — needs Suspense boundary */}
             <Suspense>
               <AppNav />
             </Suspense>

@@ -1,7 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
-import Resend from "next-auth/providers/resend";
 import Credentials from "next-auth/providers/credentials";
 
 /**
@@ -17,10 +16,6 @@ export const authConfig: NextAuthConfig = {
     Apple({
       clientId: process.env.APPLE_ID!,
       clientSecret: process.env.APPLE_SECRET!,
-    }),
-    Resend({
-      apiKey: process.env.RESEND_API_KEY,
-      from: "Kidz Creations <noreply@kidzcreations.app>",
     }),
     // Dev-only: skip OAuth in local development
     ...(process.env.NODE_ENV !== "production"

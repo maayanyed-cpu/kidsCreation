@@ -55,7 +55,7 @@ function BottomBar() {
               }`}
             >
               <span className="text-xl leading-none">{emoji}</span>
-              <span>{t(`nav.${key}`)}</span>
+              <span suppressHydrationWarning>{t(`nav.${key}`)}</span>
               {isActive && (
                 <span
                   className="absolute bottom-0 h-0.5 w-8 rounded-full bg-[#ff7657]"
@@ -85,7 +85,7 @@ function Sidebar() {
           className="text-base font-bold text-[#2d1f14] tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          {locale === "he" ? "קידז קריאציונס" : "Kidz Creations"}
+          Kidz Creations
         </span>
       </div>
 
@@ -107,7 +107,7 @@ function Sidebar() {
               }`}
             >
               <span className="text-xl w-7 text-center">{emoji}</span>
-              <span>{t(`nav.${key}`)}</span>
+              <span suppressHydrationWarning>{t(`nav.${key}`)}</span>
             </Link>
           );
         })}
