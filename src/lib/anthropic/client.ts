@@ -15,5 +15,5 @@ export function getAnthropicClient(): Anthropic {
   return client;
 }
 
-export const VISION_MODEL = "claude-3-5-sonnet-20241022";
+export const VISION_MODEL = "claude-haiku-4-5-20251001";
 export const isMockMode = () => process.env.ANTHROPIC_MOCK_MODE === "true";
