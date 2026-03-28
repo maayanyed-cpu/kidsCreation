@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KidCanvas — Full App View</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral-50:#fff5f2;--coral-100:#ffe8e0;--coral-200:#ffc9b8;--coral-300:#ffa78e;
+      --coral-400:#ff8566;--coral-500:#f06449;--coral-600:#d94f36;
+      --teal-50:#f0faf8;--teal-100:#d4f1eb;--teal-200:#a8e3d7;--teal-300:#6cc9b8;
+      --teal-400:#3bb09e;--teal-500:#2a9182;--teal-600:#1e7368;
+      --sand-50:#fefcf8;--sand-100:#fdf6eb;--sand-200:#f8ead0;--sand-300:#f0d9a8;
+      --lavender-50:#f8f5ff;--lavender-100:#ede5ff;--lavender-400:#a78bfa;
+      --warm-white:#fffdfb;--cream:#faf8f5;
+      --stone-100:#f5f0eb;--stone-200:#e8e0d8;--stone-300:#d4c8bc;
+      --stone-400:#a89888;--stone-500:#7a6e62;--stone-600:#5c5248;
+      --stone-700:#3d352e;--stone-800:#2a241f;
+      --gradient-brand:linear-gradient(135deg,#f06449,#ff8566);
+      --gradient-teal:linear-gradient(135deg,#3bb09e,#6cc9b8);
+      --gradient-sunrise:linear-gradient(135deg,#ff8566,#f0a830);
+      --shadow-sm:0 1px 3px rgba(42,36,31,0.04);
+      --shadow-md:0 4px 12px rgba(42,36,31,0.06);
+      --shadow-lg:0 12px 24px rgba(42,36,31,0.08);
+      --shadow-coral:0 8px 24px rgba(240,100,73,0.15);
+      --shadow-teal:0 8px 24px rgba(59,176,158,0.15);
+      --font-display:'Fraunces',Georgia,serif;
+      --font-body:'DM Sans',system-ui,sans-serif;
+      --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;--r-full:9999px;
+      --sidebar-w:220px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font-body);font-size:15px;color:var(--stone-700);background:var(--cream);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font-family:inherit;font-size:inherit}
+
+    /* ═══════════════════════════════════
+       LAYOUT: Sidebar + Main
+       ═══════════════════════════════════ */
+    .app-layout{display:flex;min-height:100vh}
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      width:var(--sidebar-w);flex-shrink:0;
+      background:var(--warm-white);
+      border-right:1px solid var(--stone-200);
+      padding:20px 14px;
+      display:flex;flex-direction:column;
+      position:sticky;top:0;height:100vh;
+      overflow-y:auto;
+    }
+    .sidebar-brand{
+      display:flex;align-items:center;gap:10px;
+      margin-bottom:32px;padding:4px 8px;
+    }
+    .sidebar-logo{
+      width:36px;height:36px;border-radius:11px;
+      background:var(--gradient-brand);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;font-weight:700;position:relative;
+      box-shadow:0 4px 12px rgba(240,100,73,0.2);
+    }
+    .sidebar-logo::after{
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:9px;height:9px;border-radius:50%;
+      background:var(--teal-400);border:2px solid var(--warm-white);
+    }
+    .sidebar-title{
+      font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--stone-800);
+    }
+    .sidebar-title em{font-style:normal;color:var(--coral-500)}
+
+    .sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1;margin-top:4px}
+    .sidebar-link{
+      display:flex;align-items:center;gap:11px;
+      padding:10px 12px;border-radius:10px;
+      font-size:14px;font-weight:500;color:var(--stone-500);
+      transition:all 0.2s ease;position:relative;
+    }
+    .sidebar-link:hover{background:var(--stone-100);color:var(--stone-700)}
+    .sidebar-link.active{
+      background:var(--coral-50);color:var(--coral-500);font-weight:600;
+    }
+    .sidebar-link.active::before{
+      content:'';position:absolute;left:0;top:8px;bottom:8px;
+      width:3px;border-radius:0 3px 3px 0;background:var(--coral-500);
+    }
+    .sb-icon{
+      width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+      opacity:0.55;flex-shrink:0;
+    }
+    .sidebar-link.active .sb-icon{opacity:1}
+    .sidebar-link:hover .sb-icon{opacity:0.8}
+    .sb-icon svg{width:20px;height:20px}
+    .sb-divider{height:1px;background:var(--stone-100);margin:12px 8px}
+
+    .sidebar-footer{
+      padding-top:14px;border-top:1px solid var(--stone-100);
+      font-size:11px;color:var(--stone-300);padding-left:8px;letter-spacing:0.3px;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-area{flex:1;overflow-y:auto}
+
+    /* ═══════════════════════════════════
+       LANDING / HERO (top of main)
+       ═══════════════════════════════════ */
+    .landing-hero{
+      background:linear-gradient(160deg,var(--warm-white) 0%,var(--coral-50) 50%,var(--sand-50) 100%);
+      padding:48px 40px 40px;
+      border-bottom:1px solid var(--stone-200);
+    }
+    .hero-inner{max-width:900px}
+    .safe-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 14px;background:var(--teal-50);
+      border:1px solid var(--teal-100);border-radius:var(--r-full);
+      font-size:12px;font-weight:600;color:var(--teal-600);
+    }
+    .landing-hero h1{
+      font-family:var(--font-display);font-size:42px;font-weight:800;
+      color:var(--stone-800);line-height:1.1;margin:16px 0 10px;
+    }
+    .landing-hero h1 em{font-style:normal;color:var(--coral-500)}
+    .hero-sub{font-size:17px;color:var(--stone-400);margin-bottom:24px;max-width:500px}
+
+    /* ── STEP CARDS (inside hero) ── */
+    .steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .mini-step{
+      padding:14px;border-radius:var(--r-lg);border:1px solid;
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .mini-step.s-coral{background:var(--coral-50);border-color:var(--coral-100)}
+    .mini-step.s-teal{background:var(--teal-50);border-color:var(--teal-100)}
+    .mini-step.s-sand{background:var(--sand-100);border-color:var(--sand-200)}
+    .mini-step.s-lav{background:var(--lavender-50);border-color:var(--lavender-100)}
+    .mini-step-head{display:flex;align-items:center;gap:8px}
+    .mini-step-icon{
+      width:28px;height:28px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:13px;font-weight:700;
+    }
+    .mini-step-icon.coral{background:var(--gradient-brand)}
+    .mini-step-icon.teal{background:var(--gradient-teal)}
+    .mini-step-icon.sand{background:var(--gradient-sunrise)}
+    .mini-step-icon.lav{background:linear-gradient(135deg,var(--lavender-400),#c084fc)}
+    .mini-step-label{font-size:10px;font-weight:700;color:var(--stone-400);text-transform:uppercase;letter-spacing:0.8px}
+    .mini-step h4{font-size:13px;font-weight:700;color:var(--stone-700)}
+    .mini-step .status{font-size:12px;font-weight:600;color:var(--teal-500)}
+    .mini-step .cta{font-size:12px;font-weight:600;color:var(--coral-500)}
+
+    .getting-started-pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 18px;background:var(--warm-white);
+      border:1.5px solid var(--sand-200);border-radius:var(--r-full);
+      font-weight:600;font-size:13px;color:var(--stone-600);
+    }
+    .pill-prog{
+      padding:2px 8px;background:var(--teal-400);color:#fff;
+      border-radius:var(--r-full);font-size:11px;font-weight:700;
+    }
+
+    /* ═══════════════════════════════════
+       GALLERY SECTION
+       ═══════════════════════════════════ */
+    .gallery-section{padding:32px 40px}
+
+    .gallery-header{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:20px;flex-wrap:wrap;gap:12px;
+    }
+    .gallery-title{
+      font-family:var(--font-display);
+      font-size:28px;font-weight:700;color:var(--stone-800);
+      display:flex;align-items:center;gap:10px;
+    }
+
+    /* ── KID TABS ── */
+    .kid-tabs{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .kid-tab{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 16px;border-radius:var(--r-full);
+      font-size:14px;font-weight:500;color:var(--stone-500);
+      border:1px solid var(--stone-200);background:var(--warm-white);
+      transition:all 0.2s;
+    }
+    .kid-tab:hover{background:var(--stone-100);border-color:var(--stone-300)}
+    .kid-tab.active{
+      background:var(--coral-500);color:#fff;
+      border-color:transparent;box-shadow:var(--shadow-coral);
+    }
+    .kid-tab .tab-emoji{font-size:16px}
+    .kid-tab .tab-count{
+      font-weight:700;opacity:0.8;font-size:13px;
+    }
+
+    /* ── SORT TOGGLES ── */
+    .sort-toggles{display:flex;gap:4px}
+    .sort-btn{
+      padding:6px 14px;border-radius:var(--r-full);
+      font-size:13px;font-weight:500;color:var(--stone-500);
+      border:1px solid var(--stone-200);background:var(--warm-white);
+      transition:all 0.2s;
+    }
+    .sort-btn:hover{background:var(--stone-100)}
+    .sort-btn.active{background:var(--stone-700);color:#fff;border-color:var(--stone-700)}
+
+    /* ── SHARE LINK ── */
+    .share-row{
+      display:flex;align-items:center;gap:6px;
+      margin-bottom:24px;font-size:13px;color:var(--stone-400);
+    }
+    .share-row a{color:var(--teal-600);font-weight:500}
+    .share-row a:hover{text-decoration:underline}
+
+    /* ── ART CARDS GRID ── */
+    .art-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+    .art-card{
+      background:var(--warm-white);border-radius:var(--r-xl);
+      overflow:hidden;border:1px solid var(--stone-200);
+      transition:all 0.3s ease;
+    }
+    .art-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+
+    .art-img{
+      position:relative;height:200px;overflow:hidden;
+      background:var(--stone-100);
+    }
+    .art-img img{width:100%;height:100%;object-fit:cover}
+    /* Placeholder gradient for demo */
+    .art-img-placeholder{
+      width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+      font-size:52px;
+    }
+    /* Emoji badge (top-right) */
+    .art-emoji{
+      position:absolute;top:10px;right:10px;
+      width:32px;height:32px;border-radius:50%;
+      background:var(--warm-white);box-shadow:var(--shadow-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;border:2px solid var(--stone-100);
+    }
+
+    .art-info{padding:14px 16px}
+    .art-date{font-size:14px;font-weight:600;color:var(--stone-600);margin-bottom:8px}
+
+    /* ── AI TAGS ── */
+    .art-tags{display:flex;flex-wrap:wrap;gap:6px}
+    .art-tag{
+      display:inline-block;padding:3px 10px;
+      border-radius:var(--r-full);font-size:12px;font-weight:500;
+      background:var(--stone-100);color:var(--stone-500);
+      border:1px solid var(--stone-200);
+    }
+
+    /* ═══════════════════════════════════
+       DASHBOARD SECTION (below gallery)
+       ═══════════════════════════════════ */
+    .dashboard-section{
+      padding:32px 40px 48px;
+      border-top:1px solid var(--stone-200);
+    }
+    .dash-title{
+      font-family:var(--font-display);
+      font-size:24px;font-weight:700;color:var(--stone-800);
+      margin-bottom:20px;display:flex;align-items:center;gap:10px;
+    }
+    .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .dash-card{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:20px;
+    }
+    .dash-card h4{
+      font-size:13px;font-weight:600;color:var(--stone-400);
+      text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;
+    }
+    .dash-stat{
+      font-family:var(--font-display);font-size:36px;font-weight:800;
+      color:var(--stone-800);line-height:1;
+    }
+    .dash-sub{font-size:13px;color:var(--stone-400);margin-top:4px}
+
+    .dash-card.highlight{
+      background:var(--coral-50);border-color:var(--coral-100);
+    }
+    .dash-card.highlight .dash-stat{color:var(--coral-500)}
+
+    .dash-card.teal-hl{
+      background:var(--teal-50);border-color:var(--teal-100);
+    }
+    .dash-card.teal-hl .dash-stat{color:var(--teal-500)}
+
+    /* ── Insights Card ── */
+    .insight-card{
+      grid-column:1/-1;
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:24px;margin-top:8px;
+    }
+    .insight-card h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:12px}
+    .insight-row{
+      display:flex;align-items:center;gap:12px;
+      padding:10px 0;border-bottom:1px solid var(--stone-100);
+    }
+    .insight-row:last-child{border-bottom:none}
+    .insight-emoji{font-size:20px;width:28px;text-align:center}
+    .insight-text{flex:1;font-size:14px;color:var(--stone-600)}
+    .insight-text strong{color:var(--stone-800)}
+    .insight-pct{
+      font-size:14px;font-weight:700;color:var(--coral-500);
+    }
+
+    /* ═══════════════════════════════════
+       UPLOAD SECTION
+       ═══════════════════════════════════ */
+    .upload-section{
+      padding:32px 40px;border-top:1px solid var(--stone-200);
+    }
+    .upload-inner{max-width:700px;margin:0 auto}
+
+    .upload-label{
+      font-size:11px;font-weight:700;color:var(--stone-400);
+      text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;
+    }
+
+    /* Type selector cards */
+    .type-selector{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+      margin-bottom:28px;
+    }
+    .type-option{
+      text-align:center;padding:20px 14px;
+      border:2px solid var(--stone-200);border-radius:var(--r-xl);
+      background:var(--warm-white);cursor:pointer;
+      transition:all 0.25s ease;position:relative;
+    }
+    .type-option:hover{
+      border-color:var(--coral-200);transform:translateY(-2px);
+      box-shadow:var(--shadow-md);
+    }
+    .type-option.selected{
+      border-color:var(--coral-500);background:var(--coral-50);
+      box-shadow:var(--shadow-coral);
+    }
+    .type-option.selected::after{
+      content:'✓';position:absolute;top:10px;right:12px;
+      width:22px;height:22px;border-radius:50%;
+      background:var(--coral-500);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;
+    }
+    .type-option-icon{
+      font-size:36px;margin-bottom:8px;display:block;
+    }
+    .type-option h4{font-size:15px;font-weight:700;color:var(--stone-800);margin-bottom:2px}
+    .type-option p{font-size:12px;color:var(--stone-400)}
+
+    /* Drop zone */
+    .drop-zone{
+      border:2px dashed var(--stone-300);border-radius:var(--r-2xl);
+      padding:48px 24px;text-align:center;
+      background:var(--warm-white);
+      transition:all 0.25s ease;cursor:pointer;
+    }
+    .drop-zone:hover,.drop-zone.drag-over{
+      border-color:var(--coral-400);background:var(--coral-50);
+    }
+    .drop-zone-icon{font-size:48px;margin-bottom:12px;display:block}
+    .drop-zone h3{font-size:18px;font-weight:700;color:var(--stone-800);margin-bottom:4px}
+    .drop-zone p{font-size:14px;color:var(--stone-400);margin-bottom:4px}
+    .drop-zone .formats{font-size:12px;color:var(--stone-300);letter-spacing:0.3px}
+
+    .drop-zone.hidden-zone{display:none}
+
+    /* ═══════════════════════════════════
+       CHALLENGES SECTION
+       ═══════════════════════════════════ */
+    .challenges-section{
+      padding:32px 40px;border-top:1px solid var(--stone-200);
+    }
+    .challenge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .challenge-card{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:20px;
+      transition:all 0.3s ease;position:relative;overflow:hidden;
+    }
+    .challenge-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+    .challenge-card.featured{
+      background:linear-gradient(135deg,var(--coral-50),var(--sand-50));
+      border-color:var(--coral-100);
+    }
+    .challenge-badge{
+      display:inline-block;padding:3px 10px;border-radius:var(--r-full);
+      font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+      margin-bottom:10px;
+    }
+    .badge-active{background:var(--teal-100);color:var(--teal-600)}
+    .badge-upcoming{background:var(--sand-200);color:var(--stone-600)}
+    .badge-completed{background:var(--stone-100);color:var(--stone-400)}
+    .challenge-card h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:4px}
+    .challenge-card p{font-size:13px;color:var(--stone-400);line-height:1.5;margin-bottom:12px}
+    .challenge-meta{
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:12px;color:var(--stone-400);
+    }
+    .challenge-reward{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:3px 10px;border-radius:var(--r-full);
+      background:var(--sand-100);font-weight:600;color:var(--stone-600);
+    }
+    .btn-join{
+      padding:6px 16px;background:var(--coral-500);color:#fff;
+      border-radius:var(--r-full);font-size:13px;font-weight:600;
+      transition:all 0.2s;
+    }
+    .btn-join:hover{background:var(--coral-600);box-shadow:var(--shadow-coral)}
+
+    /* ═══════════════════════════════════
+       PROGRESS SECTION
+       ═══════════════════════════════════ */
+    .progress-section{
+      padding:32px 40px 48px;border-top:1px solid var(--stone-200);
+    }
+    .progress-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+
+    /* Timeline */
+    .timeline-card{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:24px;
+    }
+    .timeline-card h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:16px}
+    .timeline-item{
+      display:flex;gap:14px;padding:12px 0;
+      border-bottom:1px solid var(--stone-100);
+    }
+    .timeline-item:last-child{border-bottom:none}
+    .timeline-dot{
+      width:12px;height:12px;border-radius:50%;margin-top:4px;flex-shrink:0;
+    }
+    .timeline-dot.coral{background:var(--coral-400)}
+    .timeline-dot.teal{background:var(--teal-400)}
+    .timeline-dot.sand{background:var(--sand-300)}
+    .timeline-dot.lav{background:var(--lavender-400)}
+    .timeline-content{flex:1}
+    .timeline-date{font-size:11px;font-weight:600;color:var(--stone-400);text-transform:uppercase;letter-spacing:0.5px}
+    .timeline-desc{font-size:14px;color:var(--stone-600);margin-top:2px}
+    .timeline-desc strong{color:var(--stone-800)}
+
+    /* Milestones */
+    .milestones-card{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:24px;
+    }
+    .milestones-card h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:16px}
+    .milestone-item{
+      display:flex;align-items:center;gap:12px;
+      padding:10px 0;border-bottom:1px solid var(--stone-100);
+    }
+    .milestone-item:last-child{border-bottom:none}
+    .milestone-icon{
+      width:40px;height:40px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;flex-shrink:0;
+    }
+    .milestone-icon.earned{background:var(--coral-50)}
+    .milestone-icon.locked{background:var(--stone-100);opacity:0.5}
+    .milestone-info{flex:1}
+    .milestone-name{font-size:14px;font-weight:600;color:var(--stone-700)}
+    .milestone-sub{font-size:12px;color:var(--stone-400)}
+
+    /* Progress bars */
+    .progress-bar-wrap{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:24px;
+      grid-column:1/-1;margin-top:4px;
+    }
+    .progress-bar-wrap h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:16px}
+    .skill-row{
+      display:flex;align-items:center;gap:14px;
+      padding:8px 0;
+    }
+    .skill-label{width:120px;font-size:13px;font-weight:600;color:var(--stone-600)}
+    .skill-bar{flex:1;height:10px;background:var(--stone-100);border-radius:var(--r-full);overflow:hidden}
+    .skill-fill{height:100%;border-radius:var(--r-full);transition:width 0.6s ease}
+    .skill-fill.coral{background:var(--gradient-brand)}
+    .skill-fill.teal{background:var(--gradient-teal)}
+    .skill-fill.sand{background:var(--gradient-sunrise)}
+    .skill-fill.lav{background:linear-gradient(135deg,var(--lavender-400),#c084fc)}
+    .skill-pct{width:40px;font-size:13px;font-weight:700;color:var(--stone-600);text-align:right}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .steps-row,.art-grid,.dash-grid,.challenge-grid{grid-template-columns:repeat(2,1fr)}
+      .progress-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:768px){
+      .sidebar{display:none}
+      .steps-row,.art-grid,.dash-grid,.challenge-grid{grid-template-columns:1fr}
+      .progress-grid{grid-template-columns:1fr}
+      .landing-hero{padding:24px 20px 28px}
+      .landing-hero h1{font-size:28px}
+      .gallery-section,.dashboard-section,.challenges-section,.progress-section{padding:20px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">✦</div>
+      <span class="sidebar-title">Arti <em>Steps</em></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#gallery-section" class="sidebar-link active">
+        <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+        Gallery
+      </a>
+      <a href="#upload-section" class="sidebar-link">
+        <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="10"/></svg></span>
+        Upload
+      </a>
+
+      <div class="sb-divider"></div>
+
+      <a href="#challenges-section" class="sidebar-link">
+        <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M7.5 14.5L5 21l7-3 7 3-2.5-6.5"/></svg></span>
+        Challenges
+      </a>
+      <a href="#dashboard-section" class="sidebar-link">
+        <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
+        Dashboard
+      </a>
+      <a href="#progress-section" class="sidebar-link">
+        <span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+        Progress
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">FamilyVibe Labs</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main-area">
+
+    <!-- ── LANDING HERO ── -->
+    <section class="landing-hero">
+      <div class="hero-inner">
+        <span class="safe-badge">🛡️ A safe space for young creators</span>
+        <h1>Welcome to <em>Arti Steps</em></h1>
+        <p class="hero-sub">Where kids share their amazing creations with family and friends 🎨🎵🖼️</p>
+
+        <div class="steps-row">
+          <div class="mini-step s-coral">
+            <div class="mini-step-head">
+              <div class="mini-step-icon coral">✓</div>
+              <span class="mini-step-label">Step 1</span>
+            </div>
+            <h4>Create Kid Profile</h4>
+            <span class="status">✓ Done</span>
+          </div>
+          <div class="mini-step s-teal">
+            <div class="mini-step-head">
+              <div class="mini-step-icon teal">✓</div>
+              <span class="mini-step-label">Step 2</span>
+            </div>
+            <h4>Set Privacy & Access</h4>
+            <span class="status">✓ Done</span>
+          </div>
+          <div class="mini-step s-sand">
+            <div class="mini-step-head">
+              <div class="mini-step-icon sand">＋</div>
+              <span class="mini-step-label">Step 3</span>
+            </div>
+            <h4>Upload a Creation</h4>
+            <span class="cta">Create Now</span>
+          </div>
+          <div class="mini-step s-lav">
+            <div class="mini-step-head">
+              <div class="mini-step-icon lav">🏆</div>
+              <span class="mini-step-label">Step 4</span>
+            </div>
+            <h4>Weekly Challenges</h4>
+            <span class="cta">Explore</span>
+          </div>
+        </div>
+
+        <span class="getting-started-pill">🚀 Getting Started — <span class="pill-prog">2 / 4</span> steps done</span>
+      </div>
+    </section>
+
+    <!-- ── GALLERY ── -->
+    <section class="gallery-section" id="gallery-section">
+
+      <div class="gallery-header">
+        <h2 class="gallery-title">🎨 Gallery</h2>
+        <div class="sort-toggles">
+          <button class="sort-btn active">Newest</button>
+          <button class="sort-btn">By Month</button>
+        </div>
+      </div>
+
+      <!-- Kid Tabs -->
+      <div class="kid-tabs">
+        <button class="kid-tab">
+          <span class="tab-emoji">⚡</span> Arad <span class="tab-count">(10)</span>
+        </button>
+        <button class="kid-tab">
+          <span class="tab-emoji">🌸</span> Noa <span class="tab-count">(6)</span>
+        </button>
+        <button class="kid-tab active">
+          <span class="tab-emoji">🎨</span> Zohar <span class="tab-count">(3)</span>
+        </button>
+      </div>
+
+      <!-- Share Link -->
+      <div class="share-row">
+        🔗 <a href="#">Share Zohar's Gallery</a>
+      </div>
+
+      <!-- Art Cards -->
+      <div class="art-grid">
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#ffc9b8,#fdf6eb)">🏠</div>
+            <div class="art-emoji">🎨</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 21</div>
+            <div class="art-tags">
+              <span class="art-tag">cityscape</span>
+              <span class="art-tag">architecture</span>
+              <span class="art-tag">diverse palette</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#d4f1eb,#e8e0d8)">🚀</div>
+            <div class="art-emoji">🔍</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 18</div>
+            <div class="art-tags">
+              <span class="art-tag">space</span>
+              <span class="art-tag">science</span>
+              <span class="art-tag">imagination</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#e8e0d8,#d4c8bc)">👨‍👩‍👧</div>
+            <div class="art-emoji">🌸</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 15</div>
+            <div class="art-tags">
+              <span class="art-tag">family</span>
+              <span class="art-tag">outdoor</span>
+              <span class="art-tag">storytelling</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#ede5ff,#d4f1eb)">🧜‍♀️</div>
+            <div class="art-emoji">✨</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 12</div>
+            <div class="art-tags">
+              <span class="art-tag">fantasy</span>
+              <span class="art-tag">ocean</span>
+              <span class="art-tag">detail work</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#bbf7d0,#fde68a)">🎮</div>
+            <div class="art-emoji">⚡</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 9</div>
+            <div class="art-tags">
+              <span class="art-tag">brawl stars</span>
+              <span class="art-tag">gaming</span>
+              <span class="art-tag">characters</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#ffc9b8,#c4b5fd)">⚽</div>
+            <div class="art-emoji">⚡</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Mar 5</div>
+            <div class="art-tags">
+              <span class="art-tag">sports</span>
+              <span class="art-tag">action</span>
+              <span class="art-tag">brawl stars</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#d4f1eb,#fdf6eb)">🏡</div>
+            <div class="art-emoji">😊</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Feb 28</div>
+            <div class="art-tags">
+              <span class="art-tag">house</span>
+              <span class="art-tag">nature</span>
+              <span class="art-tag">colorful</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#ffc9b8,#ffe8e0)">🤸</div>
+            <div class="art-emoji">🔍</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Feb 22</div>
+            <div class="art-tags">
+              <span class="art-tag">figure</span>
+              <span class="art-tag">movement</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="art-card">
+          <div class="art-img">
+            <div class="art-img-placeholder" style="background:linear-gradient(135deg,#e8e0d8,#f5f0eb)">✏️</div>
+            <div class="art-emoji">😊</div>
+          </div>
+          <div class="art-info">
+            <div class="art-date">Feb 18</div>
+            <div class="art-tags">
+              <span class="art-tag">sketch</span>
+              <span class="art-tag">pencil</span>
+              <span class="art-tag">detail</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── UPLOAD ── -->
+    <section class="upload-section" id="upload-section">
+      <div class="upload-inner">
+        <h2 class="dash-title">＋ Add a Creation</h2>
+
+        <div class="upload-label">Uploading for</div>
+        <div class="kid-tabs" style="margin-bottom:24px">
+          <button class="kid-tab">
+            <span class="tab-emoji">⚡</span> Arad
+          </button>
+          <button class="kid-tab">
+            <span class="tab-emoji">🌸</span> Noa
+          </button>
+          <button class="kid-tab active">
+            <span class="tab-emoji">🎨</span> Zohar
+          </button>
+        </div>
+
+        <div class="upload-label">What type of creation?</div>
+        <div class="type-selector" id="typeSelector">
+          <div class="type-option selected" onclick="selectType(this, 'drawing')">
+            <span class="type-option-icon">🎨</span>
+            <h4>Drawing</h4>
+            <p>Painting, sketch, craft</p>
+          </div>
+          <div class="type-option" onclick="selectType(this, 'singing')">
+            <span class="type-option-icon">🎤</span>
+            <h4>Singing</h4>
+            <p>Song, melody, recording</p>
+          </div>
+          <div class="type-option" onclick="selectType(this, 'dancing')">
+            <span class="type-option-icon">💃</span>
+            <h4>Dancing</h4>
+            <p>Dance, performance, video</p>
+          </div>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+          <span class="drop-zone-icon" id="dropIcon">🖍️🖌️🎨</span>
+          <h3 id="dropTitle">Add Zohar's latest drawing!</h3>
+          <p>Drop a photo or video here</p>
+          <span class="formats">JPG · PNG · HEIC · MP4 · MOV · up to 50 MB</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DASHBOARD (below gallery) ── -->
+    <section class="dashboard-section" id="dashboard-section">
+      <h2 class="dash-title">📊 Dashboard</h2>
+
+      <div class="dash-grid">
+        <div class="dash-card highlight">
+          <h4>Total Creations</h4>
+          <div class="dash-stat">19</div>
+          <div class="dash-sub">across 3 kids</div>
+        </div>
+        <div class="dash-card teal-hl">
+          <h4>This Month</h4>
+          <div class="dash-stat">6</div>
+          <div class="dash-sub">+3 from last month</div>
+        </div>
+        <div class="dash-card">
+          <h4>Encouragements</h4>
+          <div class="dash-stat">42</div>
+          <div class="dash-sub">from family & friends</div>
+        </div>
+
+        <!-- Insights Card -->
+        <div class="insight-card">
+          <h4>🧠 AI Insights — Zohar's Creative Growth</h4>
+
+          <div class="insight-row">
+            <span class="insight-emoji">🎯</span>
+            <span class="insight-text"><strong>Top Interest:</strong> Brawl Stars & gaming characters dominate this month</span>
+            <span class="insight-pct">40%</span>
+          </div>
+          <div class="insight-row">
+            <span class="insight-emoji">🌈</span>
+            <span class="insight-text"><strong>Color Growth:</strong> Palette diversity increased — now using 6+ colors per piece</span>
+            <span class="insight-pct">↑ 25%</span>
+          </div>
+          <div class="insight-row">
+            <span class="insight-emoji">✏️</span>
+            <span class="insight-text"><strong>Technique:</strong> Line confidence improving — emerging detail in faces and hands</span>
+          </div>
+          <div class="insight-row">
+            <span class="insight-emoji">💡</span>
+            <span class="insight-text"><strong>Growth Tip:</strong> "Zohar loves action scenes! Try a 'freeze frame' challenge — draw your favorite character mid-jump."</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CHALLENGES ── -->
+    <section class="challenges-section" id="challenges-section">
+      <h2 class="dash-title">🏆 Weekly Challenges</h2>
+
+      <div class="challenge-grid">
+        <div class="challenge-card featured">
+          <span class="challenge-badge badge-active">🔥 Active Now</span>
+          <h4>Draw Your Dream House</h4>
+          <p>Show us where you'd live if you could design any house in the world! Castles, treehouses, underwater homes — anything goes.</p>
+          <div class="challenge-meta">
+            <span>🕐 4 days left · 23 entries</span>
+            <button class="btn-join">Join Challenge</button>
+          </div>
+        </div>
+
+        <div class="challenge-card">
+          <span class="challenge-badge badge-upcoming">📅 Starts Apr 1</span>
+          <h4>Animal Mashup</h4>
+          <p>Combine two animals into one! What would a cat-fish or elephant-butterfly look like?</p>
+          <div class="challenge-meta">
+            <span class="challenge-reward">🪙 5 credits</span>
+          </div>
+        </div>
+
+        <div class="challenge-card">
+          <span class="challenge-badge badge-completed">✓ Completed</span>
+          <h4>My Family Portrait</h4>
+          <p>Draw your family doing your favorite activity together.</p>
+          <div class="challenge-meta">
+            <span>38 entries · Won 🥈 2nd place!</span>
+            <span class="challenge-reward">🪙 3 earned</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PROGRESS ── -->
+    <section class="progress-section" id="progress-section">
+      <h2 class="dash-title">📈 Progress</h2>
+
+      <div class="progress-grid">
+
+        <!-- Timeline -->
+        <div class="timeline-card">
+          <h4>Recent Activity</h4>
+
+          <div class="timeline-item">
+            <div class="timeline-dot coral"></div>
+            <div class="timeline-content">
+              <div class="timeline-date">Mar 21, 2026</div>
+              <div class="timeline-desc"><strong>Zohar</strong> uploaded "Cityscape" — tagged: architecture, diverse palette</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot teal"></div>
+            <div class="timeline-content">
+              <div class="timeline-date">Mar 18, 2026</div>
+              <div class="timeline-desc"><strong>Arad</strong> earned 🥈 2nd place in "My Family Portrait" challenge</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot lav"></div>
+            <div class="timeline-content">
+              <div class="timeline-date">Mar 15, 2026</div>
+              <div class="timeline-desc"><strong>Noa</strong> received 5 encouragements on "Sunset Beach"</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot sand"></div>
+            <div class="timeline-content">
+              <div class="timeline-date">Mar 12, 2026</div>
+              <div class="timeline-desc"><strong>Zohar</strong> reached milestone: 10 creations uploaded!</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot coral"></div>
+            <div class="timeline-content">
+              <div class="timeline-date">Mar 9, 2026</div>
+              <div class="timeline-desc"><strong>Arad</strong> uploaded "Brawl Stars Battle" — new theme detected: gaming</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Milestones -->
+        <div class="milestones-card">
+          <h4>Milestones</h4>
+
+          <div class="milestone-item">
+            <div class="milestone-icon earned">🎨</div>
+            <div class="milestone-info">
+              <div class="milestone-name">First Creation</div>
+              <div class="milestone-sub">Earned by all 3 kids</div>
+            </div>
+          </div>
+          <div class="milestone-item">
+            <div class="milestone-icon earned">🔟</div>
+            <div class="milestone-info">
+              <div class="milestone-name">10 Creations</div>
+              <div class="milestone-sub">Arad ✓ · Zohar ✓</div>
+            </div>
+          </div>
+          <div class="milestone-item">
+            <div class="milestone-icon earned">🏆</div>
+            <div class="milestone-info">
+              <div class="milestone-name">Challenge Winner</div>
+              <div class="milestone-sub">Arad — "My Family Portrait"</div>
+            </div>
+          </div>
+          <div class="milestone-item">
+            <div class="milestone-icon locked">💯</div>
+            <div class="milestone-info">
+              <div class="milestone-name">100 Encouragements</div>
+              <div class="milestone-sub">42 / 100 — keep going!</div>
+            </div>
+          </div>
+          <div class="milestone-item">
+            <div class="milestone-icon locked">🌟</div>
+            <div class="milestone-info">
+              <div class="milestone-name">50 Creations</div>
+              <div class="milestone-sub">19 / 50</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill Progress Bars -->
+        <div class="progress-bar-wrap">
+          <h4>Creative Skills — Zohar (March 2026)</h4>
+
+          <div class="skill-row">
+            <span class="skill-label">Color Diversity</span>
+            <div class="skill-bar"><div class="skill-fill coral" style="width:72%"></div></div>
+            <span class="skill-pct">72%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-label">Line Confidence</span>
+            <div class="skill-bar"><div class="skill-fill teal" style="width:58%"></div></div>
+            <span class="skill-pct">58%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-label">Subject Complexity</span>
+            <div class="skill-bar"><div class="skill-fill sand" style="width:65%"></div></div>
+            <span class="skill-pct">65%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-label">Composition</span>
+            <div class="skill-bar"><div class="skill-fill lav" style="width:45%"></div></div>
+            <span class="skill-pct">45%</span>
+          </div>
+          <div class="skill-row">
+            <span class="skill-label">Detail & Texture</span>
+            <div class="skill-bar"><div class="skill-fill coral" style="width:40%"></div></div>
+            <span class="skill-pct">40%</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+function selectType(el, type) {
+  // Remove selected from all
+  document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const dropIcon = document.getElementById('dropIcon');
+  const dropTitle = document.getElementById('dropTitle');
+  const kidName = document.querySelector('.kid-tab.active')?.textContent.trim().split(' ').pop() || 'your kid';
+
+  if (type === 'drawing') {
+    dropIcon.textContent = '🖍️🖌️🎨';
+    dropTitle.textContent = `Add ${kidName}'s latest drawing!`;
+  } else if (type === 'singing') {
+    dropIcon.textContent = '🎵🎤🎶';
+    dropTitle.textContent = `Add ${kidName}'s latest song!`;
+  } else if (type === 'dancing') {
+    dropIcon.textContent = '💃🎬🕺';
+    dropTitle.textContent = `Add ${kidName}'s latest dance!`;
+  }
+}
+
+// Drop zone hover effect
+const dz = document.getElementById('dropZone');
+if (dz) {
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); });
+}
+</script>
+
+</body>
+</html>

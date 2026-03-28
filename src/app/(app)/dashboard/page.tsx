@@ -46,6 +46,49 @@ async function getArtworksForChild(childId: string): Promise<ArtworkAnalysis[]> 
   return rows.map(mapArtwork);
 }
 
+async function getDashboardStats(allChildren: Child[]) {
+  // Total creations across all kids
+  const totalCreations = await prisma.artworkAnalysis.count({
+    where: { deleted_at: null },
+  });
+
+  // This month's creations
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+
+  const thisMonthCount = await prisma.artworkAnalysis.count({
+    where: { deleted_at: null, analysis_date: { gte: monthStart } },
+  });
+
+  const lastMonthCount = await prisma.artworkAnalysis.count({
+    where: {
+      deleted_at: null,
+      analysis_date: { gte: lastMonthStart, lte: lastMonthEnd },
+    },
+  });
+
+  const monthDiff = thisMonthCount - lastMonthCount;
+
+  // Count of encouragements (reactions)
+  let encouragementCount = 0;
+  try {
+    encouragementCount = await prisma.reaction.count();
+  } catch {
+    // Reaction table may not exist in all environments
+    encouragementCount = 0;
+  }
+
+  return {
+    totalCreations,
+    childCount: allChildren.length,
+    thisMonthCount,
+    monthDiff,
+    encouragementCount,
+  };
+}
+
 interface PageProps {
   searchParams: Promise<{ child?: string }>;
 }
@@ -66,6 +109,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     allChildren.find((c) => c.id === childId) ??
     allChildren.find((c) => c.id === DEFAULT_CHILD_ID) ??
     allChildren[0];
+
+  const stats = await getDashboardStats(allChildren);
 
   // Fetch current challenge + submission status
   const challenge = await getCurrentChallenge();
@@ -122,6 +167,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         allArtworks={artworks}
         allChildren={allChildren}
         selectedChildId={selectedChild.id}
+        stats={stats}
       />
     </>
   );

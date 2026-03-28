@@ -18,6 +18,14 @@ import { GrowthTipCard } from "./GrowthTipCard";
 import { SkeletonDashboard } from "./SkeletonCard";
 import { VideoCard } from "@/components/video/VideoCard";
 
+interface DashboardStats {
+  totalCreations: number;
+  childCount: number;
+  thisMonthCount: number;
+  monthDiff: number;
+  encouragementCount: number;
+}
+
 interface Props {
   initialInsight: Insight | null;
   childId: string;
@@ -27,6 +35,7 @@ interface Props {
   allArtworks: ArtworkAnalysis[];
   allChildren: Child[];
   selectedChildId: string;
+  stats?: DashboardStats;
 }
 
 // ── Locale toggle ──────────────────────────────────────────────────────────
@@ -165,6 +174,7 @@ export function ParentInsightDashboard({
   allArtworks,
   allChildren,
   selectedChildId,
+  stats,
 }: Props) {
   const { t, locale, dir } = useLocale();
   const [insight, setInsight] = useState<Insight | null>(initialInsight);
@@ -269,6 +279,165 @@ export function ParentInsightDashboard({
         className="max-w-3xl mx-auto px-4 sm:px-6 py-8"
         style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
       >
+        {/* ── Dashboard stat cards ──────────────────────────────────────── */}
+        {stats && (
+          <>
+            <style>{`
+              .dash-stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+                margin-bottom: 24px;
+              }
+              @media (max-width: 640px) {
+                .dash-stats-grid { grid-template-columns: 1fr; }
+              }
+              .dash-stat-card {
+                background: #fffdfb;
+                border: 1px solid #e8e0d8;
+                border-radius: 20px;
+                padding: 20px;
+              }
+              .dash-stat-card h4 {
+                font-size: 13px;
+                font-weight: 600;
+                color: #a89888;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+              }
+              .dash-stat-num {
+                font-family: var(--font-display);
+                font-size: 36px;
+                font-weight: 800;
+                color: #2a241f;
+                line-height: 1;
+              }
+              .dash-stat-sub {
+                font-size: 13px;
+                color: #a89888;
+                margin-top: 4px;
+              }
+              .dash-stat-card.stat-coral {
+                background: #fff5f2;
+                border-color: #ffe8e0;
+              }
+              .dash-stat-card.stat-coral .dash-stat-num {
+                color: #f06449;
+              }
+              .dash-stat-card.stat-teal {
+                background: #f0faf8;
+                border-color: #d4f1eb;
+              }
+              .dash-stat-card.stat-teal .dash-stat-num {
+                color: #2a9182;
+              }
+
+              .dash-insight-card {
+                background: #fffdfb;
+                border: 1px solid #e8e0d8;
+                border-radius: 20px;
+                padding: 24px;
+                margin-bottom: 24px;
+              }
+              .dash-insight-card h4 {
+                font-size: 16px;
+                font-weight: 700;
+                color: #2a241f;
+                margin-bottom: 12px;
+              }
+              .dash-insight-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 0;
+                border-bottom: 1px solid #f5f0eb;
+              }
+              .dash-insight-row:last-child { border-bottom: none; }
+              .dash-insight-emoji { font-size: 20px; width: 28px; text-align: center; }
+              .dash-insight-text { flex: 1; font-size: 14px; color: #5c5248; }
+              .dash-insight-text strong { color: #2a241f; }
+              .dash-insight-pct { font-size: 14px; font-weight: 700; color: #f06449; }
+            `}</style>
+
+            <div className="dash-stats-grid">
+              <div className="dash-stat-card stat-coral">
+                <h4>{locale === "he" ? "סה״כ יצירות" : "Total Creations"}</h4>
+                <div className="dash-stat-num">{stats.totalCreations}</div>
+                <div className="dash-stat-sub">
+                  {locale === "he"
+                    ? `ב-${stats.childCount} ילדים`
+                    : `across ${stats.childCount} kids`}
+                </div>
+              </div>
+              <div className="dash-stat-card stat-teal">
+                <h4>{locale === "he" ? "החודש" : "This Month"}</h4>
+                <div className="dash-stat-num">{stats.thisMonthCount}</div>
+                <div className="dash-stat-sub">
+                  {stats.monthDiff >= 0
+                    ? `+${stats.monthDiff} ${locale === "he" ? "מהחודש שעבר" : "from last month"}`
+                    : `${stats.monthDiff} ${locale === "he" ? "מהחודש שעבר" : "from last month"}`}
+                </div>
+              </div>
+              <div className="dash-stat-card">
+                <h4>{locale === "he" ? "עידודים" : "Encouragements"}</h4>
+                <div className="dash-stat-num">{stats.encouragementCount}</div>
+                <div className="dash-stat-sub">
+                  {locale === "he" ? "מהמשפחה וחברים" : "from family & friends"}
+                </div>
+              </div>
+            </div>
+
+            {/* AI Insights summary — only show when we have insight data */}
+            {insight && (
+              <div className="dash-insight-card">
+                <h4>
+                  🧠 {locale === "he"
+                    ? `תובנות AI — הצמיחה היצירתית של ${displayName}`
+                    : `AI Insights — ${displayName}'s Creative Growth`}
+                </h4>
+                {insight.top_interest && (
+                  <div className="dash-insight-row">
+                    <span className="dash-insight-emoji">🎯</span>
+                    <span className="dash-insight-text">
+                      <strong>{locale === "he" ? "עניין מוביל:" : "Top Interest:"}</strong>{" "}
+                      {insight.top_interest}
+                    </span>
+                  </div>
+                )}
+                {insight.visual_evolution && (
+                  <div className="dash-insight-row">
+                    <span className="dash-insight-emoji">🌈</span>
+                    <span className="dash-insight-text">
+                      <strong>{locale === "he" ? "צבעוניות:" : "Color Growth:"}</strong>{" "}
+                      {locale === "he" ? "מגוון צבעים" : "Color diversity"}: {insight.visual_evolution.color_diversity}%
+                    </span>
+                    <span className="dash-insight-pct">{insight.visual_evolution.color_diversity}%</span>
+                  </div>
+                )}
+                {insight.visual_evolution?.line_confidence && (
+                  <div className="dash-insight-row">
+                    <span className="dash-insight-emoji">✏️</span>
+                    <span className="dash-insight-text">
+                      <strong>{locale === "he" ? "טכניקה:" : "Technique:"}</strong>{" "}
+                      {insight.visual_evolution.line_confidence} — {insight.visual_evolution.subject_complexity}
+                    </span>
+                  </div>
+                )}
+                {insight.growth_tip && (
+                  <div className="dash-insight-row">
+                    <span className="dash-insight-emoji">💡</span>
+                    <span className="dash-insight-text">
+                      <strong>{locale === "he" ? "טיפ לצמיחה:" : "Growth Tip:"}</strong>{" "}
+                      {insight.growth_tip}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
         {isPending ? (
           <SkeletonDashboard />
         ) : !insight ? (
