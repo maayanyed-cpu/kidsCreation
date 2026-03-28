@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Varela_Round, Rubik, Heebo } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
-import { AppNav } from "@/components/layout/AppNav";
 import { LocaleProvider } from "@/lib/i18n/LocaleContext";
 import { Providers } from "@/components/layout/Providers";
 import { auth } from "@/auth";
@@ -44,13 +42,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       lang="en"
       className={`${varelaRound.variable} ${rubik.variable} ${heebo.variable} h-full`}
     >
-      <body className="min-h-full md:pl-60">
+      <body className="min-h-full">
         <Providers session={session}>
           <LocaleProvider>
             {children}
-            <Suspense>
-              <AppNav />
-            </Suspense>
           </LocaleProvider>
         </Providers>
       </body>
