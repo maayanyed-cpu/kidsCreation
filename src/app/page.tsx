@@ -39,7 +39,7 @@ export default function LandingPage() {
           </span>
           <nav className="top-links">
             <a href="#features" className="top-link">Features</a>
-            <Link href="/dashboard" className="top-link">Dashboard</Link>
+            <Link href="/gallery" className="top-link">Gallery</Link>
           </nav>
         </header>
 
