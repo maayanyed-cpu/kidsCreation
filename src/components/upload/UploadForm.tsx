@@ -297,7 +297,7 @@ export function UploadForm({ children, defaultChildId, challengeId, challengeTit
             ref={fileInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/quicktime"
-            className="hidden"
+            className="sr-only"
             onChange={handleFileInput}
           />
         </div>
