@@ -234,7 +234,7 @@ function renderClosingCard(ctx: CanvasRenderingContext2D, alpha: number) {
   fillGradient(ctx, "#fff4f0", "#f0faf8");
   ctx.globalAlpha = alpha;
   drawCenteredText(ctx, "Made with ❤️ on", H / 2 - 20, "500 22px system-ui, sans-serif", MUTED);
-  drawCenteredText(ctx, "Kidz Creations", H / 2 + 25, 'bold 36px "Fraunces", Georgia, serif', CORAL);
+  drawCenteredText(ctx, "Arti Steps", H / 2 + 25, 'bold 36px "Fraunces", Georgia, serif', CORAL);
   ctx.globalAlpha = 1;
 }
 

@@ -59,8 +59,8 @@ export function HighlightVideoModal({ config, onClose }: Props) {
     if (!videoBlob) return;
     const he = config.locale === "he";
     const text = he
-      ? `🎬🎨 היצירות של ${config.childName} — ${config.period}! נוצר ב-Kidz Creations`
-      : `🎬🎨 ${config.childName}'s ${config.type === "yearly" ? "year" : "month"} of creativity! Made with Kidz Creations`;
+      ? `🎬🎨 היצירות של ${config.childName} — ${config.period}! נוצר ב-Arti Steps`
+      : `🎬🎨 ${config.childName}'s ${config.type === "yearly" ? "year" : "month"} of creativity! Made with Arti Steps`;
 
     if (navigator.share) {
       navigator.share({

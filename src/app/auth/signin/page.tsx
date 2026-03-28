@@ -249,7 +249,7 @@ function AppleIcon() {
 
 const TRANSLATIONS = {
   en: {
-    title: "Kidz Creations",
+    title: "Arti Steps",
     subtitle: "Turn the pile of drawings into lifelong memories.",
     badge: "Protected Family Sanctuary",
     continueGoogle: "Continue with Google",
@@ -263,7 +263,7 @@ const TRANSLATIONS = {
     terms: "By continuing you agree to our Terms & Privacy Policy.",
   },
   he: {
-    title: "Kidz Creations",
+    title: "Arti Steps",
     subtitle: "הפכו את ערימת הציורים לזיכרונות לכל החיים.",
     badge: "מרחב משפחתי מוגן",
     continueGoogle: "המשך עם Google",

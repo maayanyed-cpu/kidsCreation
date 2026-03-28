@@ -129,7 +129,7 @@ function drawIGCard(
   ctx.textAlign = "center";
   ctx.fillStyle = "#c4b5a5";
   ctx.font = "600 26px 'Nunito', Arial, sans-serif";
-  ctx.fillText("🎨 Kidz Creations", CX, 58);
+  ctx.fillText("🎨 Arti Steps", CX, 58);
 
   // ── Hero: emoji + name + period ─────────────────────────────────────────
   ctx.font = "96px Arial, sans-serif"; // emoji-only line
@@ -294,11 +294,11 @@ function drawIGCard(
   ctx.textAlign = "center";
   ctx.font = "600 28px 'Nunito', Arial, sans-serif";
   ctx.fillStyle = "#9b8474";
-  ctx.fillText("Made with ❤️ Kidz Creations", CX, FY + 56);
+  ctx.fillText("Made with ❤️ Arti Steps", CX, FY + 56);
 
   ctx.font = "500 24px 'Nunito', Arial, sans-serif";
   ctx.fillStyle = "#c4b5a5";
-  ctx.fillText("kidzcreations.app", CX, FY + 96);
+  ctx.fillText("artisteps.app", CX, FY + 96);
 }
 
 function drawTagPills(
@@ -380,7 +380,7 @@ function drawOGCard(
   // Branding at bottom of left panel
   ctx.font = "500 22px 'Nunito', Arial, sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillText("kidzcreations.app", LCX, 570);
+  ctx.fillText("artisteps.app", LCX, 570);
 
   // Right panel — cream
   const RX = leftW + 4; // 4px divider
@@ -446,11 +446,11 @@ function drawOGCard(
   // Footer branding
   ctx.font = "500 22px 'Nunito', Arial, sans-serif";
   ctx.fillStyle = "#c4b5a5";
-  ctx.fillText("Made with ❤️ Kidz Creations", RCX, 530);
+  ctx.fillText("Made with ❤️ Arti Steps", RCX, 530);
 
   ctx.font = "500 20px 'Nunito', Arial, sans-serif";
   ctx.fillStyle = "#d6ccc4";
-  ctx.fillText("kidzcreations.app", RCX, 566);
+  ctx.fillText("artisteps.app", RCX, 566);
 }
 
 // ── Simple Hebrew lookup helpers (avoid importing all of he.json) ─────────────
@@ -549,8 +549,8 @@ export function ShareModal({ insight, childName, artworkCount, onClose }: ShareM
 
   const shareText =
     locale === "he"
-      ? `${childName} היה/ה אובססיבי/ת ל${interestHe(insight.top_interest)} החודש! 🎨 ראו את דוח הצמיחה היצירתית שלהם ב-Kidz Creations: kidzcreations.app`
-      : `${childName} has been obsessed with ${insight.top_interest} this month! 🎨 See their Creative Growth Report on Kidz Creations: kidzcreations.app`;
+      ? `${childName} היה/ה אובססיבי/ת ל${interestHe(insight.top_interest)} החודש! 🎨 ראו את דוח הצמיחה היצירתית שלהם ב-Arti Steps: artisteps.app`
+      : `${childName} has been obsessed with ${insight.top_interest} this month! 🎨 See their Creative Growth Report on Arti Steps: artisteps.app`;
 
   const handleNativeShare = async () => {
     if (!activeCard) return;

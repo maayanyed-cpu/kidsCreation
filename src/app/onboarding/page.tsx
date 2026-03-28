@@ -23,7 +23,7 @@ export default async function OnboardingPage() {
             className="text-xl font-bold text-[#2d1f14]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Kidz Creations
+            Arti Steps
           </h1>
         </div>
 

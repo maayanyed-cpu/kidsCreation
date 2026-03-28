@@ -32,7 +32,7 @@ const heebo = Heebo({
 });
 
 export const metadata: Metadata = {
-  title: "Kidz Creations — Creative Growth Reports",
+  title: "Arti Steps — Creative Growth Reports",
   description: "Monthly AI-powered creative development insights for your child",
   viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
 };

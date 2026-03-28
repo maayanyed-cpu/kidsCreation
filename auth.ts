@@ -10,7 +10,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig.providers,
     Resend({
       apiKey: process.env.RESEND_API_KEY,
-      from: "Kidz Creations <noreply@kidzcreations.app>",
+      from: "Arti Steps <noreply@artisteps.app>",
     }),
   ],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

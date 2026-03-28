@@ -85,7 +85,7 @@ function Sidebar() {
           className="text-base font-bold text-[#2d1f14] tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Kidz Creations
+          Arti Steps
         </span>
       </div>
 
