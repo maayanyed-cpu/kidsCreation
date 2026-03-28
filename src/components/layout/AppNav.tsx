@@ -213,7 +213,7 @@ function Sidebar() {
         style={{ padding: "20px 14px" }}
       >
         {/* Brand */}
-        <div className="flex items-center gap-2.5 mb-8 px-2 pt-1">
+        <Link href="/" className="flex items-center gap-2.5 mb-8 px-2 pt-1 no-underline">
           <div className="sb-brand-logo">✦</div>
           <span
             className="text-[17px] font-bold text-[#2a241f]"
@@ -221,7 +221,7 @@ function Sidebar() {
           >
             Arti <span className="text-[#f06449]">Steps</span>
           </span>
-        </div>
+        </Link>
 
         {/* Nav items — upper group */}
         <div className="flex flex-col gap-0.5 flex-1 mt-1">
