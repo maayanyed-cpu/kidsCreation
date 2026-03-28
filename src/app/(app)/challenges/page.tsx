@@ -1,26 +1,12 @@
 import { prisma } from "@/lib/db/prisma";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { ChallengeHistory } from "@/components/challenges/ChallengeHistory";
 import { getStreak } from "@/lib/challenges";
 
 export default async function ChallengesPage() {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/auth/signin");
-
-  const children = await prisma.child.findMany({
-    where: { parent_id: session.user.id },
+  const childList = await prisma.child.findMany({
     select: { id: true, name: true, name_he: true, avatar_emoji: true },
     orderBy: { created_at: "asc" },
   });
-
-  // If no children via parent_id (e.g. seeded data), fall back to all children
-  const childList = children.length > 0
-    ? children
-    : await prisma.child.findMany({
-        select: { id: true, name: true, name_he: true, avatar_emoji: true },
-        orderBy: { created_at: "asc" },
-      });
 
   const challenges = await prisma.challenge.findMany({
     where: { active: true },
