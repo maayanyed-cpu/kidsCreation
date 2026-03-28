@@ -42,13 +42,6 @@ export default async function UploadPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen" style={{ background: "var(--cream, #faf8f5)" }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10" style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
-        <h1
-          className="text-2xl font-bold text-[#2d1f14] tracking-tight mb-8 flex items-center gap-2.5"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          ＋ Add a Creation
-        </h1>
-
         <div
           className="rounded-3xl border border-[#e8e0d8] p-6 sm:p-8"
           style={{ background: "#fffdfb", boxShadow: "0 1px 3px rgba(42,36,31,0.04)" }}
