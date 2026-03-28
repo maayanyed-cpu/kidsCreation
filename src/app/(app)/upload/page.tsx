@@ -30,7 +30,6 @@ export default async function UploadPage({ searchParams }: PageProps) {
     allChildren.find((c) => c.id === DEFAULT_CHILD_ID) ??
     allChildren[0];
 
-  // Fetch challenge details if linked
   let challengeInfo: { id: string; title: string; title_he: string; emoji: string } | null = null;
   if (challengeId) {
     const ch = await prisma.challenge.findUnique({
@@ -41,46 +40,40 @@ export default async function UploadPage({ searchParams }: PageProps) {
   }
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: "linear-gradient(160deg, #fff4f0 0%, #fdf8f4 40%, #f0faf8 100%)" }}
-    >
-      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-[#f0ede9] px-4 sm:px-6 py-4">
-        <div className="max-w-lg mx-auto">
-          <h1
-            className="text-xl font-bold text-[#2d1f14] tracking-tight"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            ➕ Add a Creation
-          </h1>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ background: "var(--cream, #faf8f5)" }}>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10" style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
+        <h1
+          className="text-2xl font-bold text-[#2d1f14] tracking-tight mb-8 flex items-center gap-2.5"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          ＋ Add a Creation
+        </h1>
 
-      <main
-        className="max-w-lg mx-auto px-4 sm:px-6 py-6"
-        style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
-      >
-        {/* Challenge context banner */}
-        {challengeInfo && (
-          <div
-            className="rounded-2xl p-4 mb-5 flex items-center gap-3"
-            style={{ background: "linear-gradient(135deg, #fff8f5, #f0faf8)", border: "1.5px solid #fde8e2" }}
-          >
-            <span className="text-2xl">{challengeInfo.emoji}</span>
-            <div>
-              <p className="text-[10px] font-bold text-[#9b8474] uppercase tracking-wider">Challenge Submission</p>
-              <p className="text-sm font-bold text-[#2d1f14]">{challengeInfo.title}</p>
+        <div
+          className="rounded-3xl border border-[#e8e0d8] p-6 sm:p-8"
+          style={{ background: "#fffdfb", boxShadow: "0 1px 3px rgba(42,36,31,0.04)" }}
+        >
+          {challengeInfo && (
+            <div
+              className="rounded-2xl p-4 mb-6 flex items-center gap-3"
+              style={{ background: "linear-gradient(135deg, #fff8f5, #f0faf8)", border: "1.5px solid #fde8e2" }}
+            >
+              <span className="text-2xl">{challengeInfo.emoji}</span>
+              <div>
+                <p className="text-[10px] font-bold text-[#9b8474] uppercase tracking-wider">Challenge Submission</p>
+                <p className="text-sm font-bold text-[#2d1f14]">{challengeInfo.title}</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <UploadForm
-          children={allChildren}
-          defaultChildId={selectedChild.id}
-          challengeId={challengeInfo?.id}
-          challengeTitle={challengeInfo?.title}
-        />
-      </main>
+          <UploadForm
+            children={allChildren}
+            defaultChildId={selectedChild.id}
+            challengeId={challengeInfo?.id}
+            challengeTitle={challengeInfo?.title}
+          />
+        </div>
+      </div>
     </div>
   );
 }

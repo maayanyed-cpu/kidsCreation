@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arti Steps — Upload a Creation</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral-50:#fff5f2;--coral-100:#ffe8e0;--coral-200:#ffc9b8;
+      --coral-400:#ff8566;--coral-500:#f06449;--coral-600:#d94f36;
+      --teal-50:#f0faf8;--teal-100:#d4f1eb;--teal-400:#3bb09e;--teal-500:#2a9182;--teal-600:#1e7368;
+      --sand-50:#fefcf8;--sand-100:#fdf6eb;--sand-200:#f8ead0;
+      --lavender-50:#f8f5ff;--lavender-100:#ede5ff;--lavender-400:#a78bfa;
+      --warm-white:#fffdfb;--cream:#faf8f5;
+      --stone-100:#f5f0eb;--stone-200:#e8e0d8;--stone-300:#d4c8bc;
+      --stone-400:#a89888;--stone-500:#7a6e62;--stone-600:#5c5248;
+      --stone-700:#3d352e;--stone-800:#2a241f;
+      --gradient-brand:linear-gradient(135deg,#f06449,#ff8566);
+      --gradient-teal:linear-gradient(135deg,#3bb09e,#6cc9b8);
+      --gradient-sunrise:linear-gradient(135deg,#ff8566,#f0a830);
+      --shadow-sm:0 1px 3px rgba(42,36,31,0.04);
+      --shadow-md:0 4px 12px rgba(42,36,31,0.06);
+      --shadow-lg:0 12px 24px rgba(42,36,31,0.08);
+      --shadow-coral:0 8px 24px rgba(240,100,73,0.15);
+      --font-display:'Fraunces',Georgia,serif;
+      --font-body:'DM Sans',system-ui,sans-serif;
+      --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;--r-full:9999px;
+      --sidebar-w:220px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font-body);font-size:15px;color:var(--stone-700);background:var(--cream);min-height:100vh;-webkit-font-smoothing:antialiased}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font-family:inherit;font-size:inherit}
+
+    /* ── LAYOUT ── */
+    .app{display:flex;min-height:100vh}
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      width:var(--sidebar-w);flex-shrink:0;
+      background:var(--warm-white);
+      border-right:1px solid var(--stone-200);
+      padding:24px 16px;
+      display:flex;flex-direction:column;
+      position:sticky;top:0;height:100vh;
+    }
+    .sb-brand{display:flex;align-items:center;gap:10px;margin-bottom:36px;padding:0 4px}
+    .sb-logo{
+      width:34px;height:34px;border-radius:10px;
+      background:var(--gradient-brand);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:17px;font-weight:700;position:relative;
+      box-shadow:var(--shadow-coral);
+    }
+    .sb-logo::after{
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:9px;height:9px;border-radius:50%;
+      background:var(--teal-400);border:2px solid var(--warm-white);
+    }
+    .sb-name{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--stone-800)}
+    .sb-name em{font-style:normal;color:var(--coral-500)}
+
+    .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1}
+    .sb-link{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:var(--r-md);
+      font-size:14px;font-weight:500;color:var(--stone-500);
+      transition:all 0.2s;
+    }
+    .sb-link:hover{background:var(--stone-100);color:var(--stone-700)}
+    .sb-link.active{background:var(--coral-50);color:var(--coral-500);font-weight:600}
+    .sb-link .i{font-size:18px;width:24px;text-align:center}
+
+    .sb-footer{
+      padding-top:16px;border-top:1px solid var(--stone-100);
+      font-size:12px;color:var(--stone-300);
+    }
+
+    /* ── MAIN ── */
+    .main{flex:1;display:flex;flex-direction:column;align-items:center;padding:40px 40px 60px}
+
+    .page-title{
+      font-family:var(--font-display);font-size:28px;font-weight:700;
+      color:var(--stone-800);margin-bottom:32px;
+      display:flex;align-items:center;gap:10px;
+    }
+
+    .upload-card{
+      width:100%;max-width:680px;
+      background:var(--warm-white);
+      border:1px solid var(--stone-200);
+      border-radius:var(--r-2xl);
+      padding:32px;
+      box-shadow:var(--shadow-sm);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label{
+      font-size:11px;font-weight:700;color:var(--stone-400);
+      text-transform:uppercase;letter-spacing:1.2px;
+      margin-bottom:12px;
+    }
+
+    /* ── KID TABS ── */
+    .kid-tabs{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+    .kid-tab{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 18px;border-radius:var(--r-full);
+      font-size:14px;font-weight:500;color:var(--stone-500);
+      border:1px solid var(--stone-200);background:var(--warm-white);
+      transition:all 0.2s;cursor:pointer;
+    }
+    .kid-tab:hover{background:var(--stone-100);border-color:var(--stone-300)}
+    .kid-tab.active{
+      background:var(--coral-500);color:#fff;
+      border-color:transparent;box-shadow:var(--shadow-coral);
+    }
+    .kid-tab .emoji{font-size:16px}
+
+    /* ── TYPE SELECTOR ── */
+    .type-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+      margin-bottom:28px;
+    }
+    .type-card{
+      text-align:center;padding:24px 14px;
+      border:2px solid var(--stone-200);border-radius:var(--r-xl);
+      background:var(--warm-white);cursor:pointer;
+      transition:all 0.25s ease;position:relative;
+    }
+    .type-card:hover{
+      border-color:var(--coral-200);transform:translateY(-3px);
+      box-shadow:var(--shadow-md);
+    }
+    .type-card.selected{
+      border-color:var(--coral-500);background:var(--coral-50);
+      box-shadow:var(--shadow-coral);
+    }
+    .type-card.selected::after{
+      content:'✓';position:absolute;top:10px;right:12px;
+      width:24px;height:24px;border-radius:50%;
+      background:var(--coral-500);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:700;
+    }
+    .type-card .type-emoji{font-size:40px;display:block;margin-bottom:10px}
+    .type-card h4{font-size:16px;font-weight:700;color:var(--stone-800);margin-bottom:3px}
+    .type-card p{font-size:13px;color:var(--stone-400);line-height:1.4}
+
+    /* ── DIVIDER ── */
+    .section-divider{
+      height:1px;background:var(--stone-100);margin:0 0 28px;
+    }
+
+    /* ── DROP ZONE ── */
+    .drop-zone{
+      border:2px dashed var(--stone-300);border-radius:var(--r-2xl);
+      padding:56px 24px;text-align:center;
+      background:var(--warm-white);
+      transition:all 0.3s ease;cursor:pointer;
+    }
+    .drop-zone:hover,.drop-zone.drag-over{
+      border-color:var(--coral-400);background:var(--coral-50);
+      box-shadow:inset 0 0 0 2px rgba(240,100,73,0.05);
+    }
+    .drop-zone .dz-icon{font-size:52px;margin-bottom:16px;display:block}
+    .drop-zone h3{
+      font-family:var(--font-display);
+      font-size:20px;font-weight:700;color:var(--stone-800);margin-bottom:6px;
+    }
+    .drop-zone p{font-size:14px;color:var(--stone-400);margin-bottom:6px}
+    .drop-zone .formats{font-size:12px;color:var(--stone-300);letter-spacing:0.3px}
+
+    /* ── UPLOAD BUTTON (shown after file selected) ── */
+    .upload-actions{
+      display:none;margin-top:24px;
+      justify-content:flex-end;gap:12px;
+    }
+    .upload-actions.visible{display:flex}
+    .btn-cancel{
+      padding:10px 24px;border-radius:var(--r-full);
+      font-size:14px;font-weight:600;color:var(--stone-500);
+      border:1px solid var(--stone-200);background:var(--warm-white);
+      transition:all 0.2s;
+    }
+    .btn-cancel:hover{background:var(--stone-100)}
+    .btn-upload{
+      padding:10px 28px;border-radius:var(--r-full);
+      font-size:14px;font-weight:600;color:#fff;
+      background:var(--coral-500);
+      box-shadow:var(--shadow-coral);
+      transition:all 0.25s;
+    }
+    .btn-upload:hover{background:var(--coral-600);transform:translateY(-1px)}
+
+    /* ── FILE PREVIEW ── */
+    .file-preview{
+      display:none;align-items:center;gap:14px;
+      padding:14px 18px;margin-top:20px;
+      background:var(--sand-50);border:1px solid var(--sand-200);
+      border-radius:var(--r-lg);
+    }
+    .file-preview.visible{display:flex}
+    .file-preview .fp-thumb{
+      width:56px;height:56px;border-radius:var(--r-md);
+      background:var(--stone-100);display:flex;align-items:center;justify-content:center;
+      font-size:28px;flex-shrink:0;overflow:hidden;
+    }
+    .file-preview .fp-thumb img{width:100%;height:100%;object-fit:cover}
+    .file-preview .fp-info{flex:1}
+    .file-preview .fp-name{font-size:14px;font-weight:600;color:var(--stone-700)}
+    .file-preview .fp-size{font-size:12px;color:var(--stone-400)}
+    .file-preview .fp-remove{
+      width:32px;height:32px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;color:var(--stone-400);
+      transition:all 0.2s;
+    }
+    .file-preview .fp-remove:hover{background:#fee2e2;color:#e05252}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .sidebar{display:none}
+      .main{padding:24px 16px}
+      .type-grid{grid-template-columns:1fr}
+      .upload-card{padding:20px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">✦</div>
+      <span class="sb-name">Arti <em>Steps</em></span>
+    </div>
+    <nav class="sb-nav">
+      <a href="#" class="sb-link"><span class="i">📊</span> Dashboard</a>
+      <a href="#" class="sb-link"><span class="i">🎨</span> Gallery</a>
+      <a href="#" class="sb-link active"><span class="i">＋</span> Upload</a>
+      <a href="#" class="sb-link"><span class="i">🏆</span> Challenges</a>
+      <a href="#" class="sb-link"><span class="i">📈</span> Progress</a>
+    </nav>
+    <div class="sb-footer">FamilyVibe Labs</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+
+    <h1 class="page-title">＋ Add a Creation</h1>
+
+    <div class="upload-card">
+
+      <!-- Kid Selector -->
+      <div class="section-label">Uploading for</div>
+      <div class="kid-tabs">
+        <button class="kid-tab" onclick="selectKid(this, 'Arad')">
+          <span class="emoji">⚡</span> Arad
+        </button>
+        <button class="kid-tab" onclick="selectKid(this, 'Noa')">
+          <span class="emoji">🌸</span> Noa
+        </button>
+        <button class="kid-tab active" onclick="selectKid(this, 'Zohar')">
+          <span class="emoji">🎨</span> Zohar
+        </button>
+      </div>
+
+      <!-- Type Selector -->
+      <div class="section-label">What type of creation?</div>
+      <div class="type-grid" id="typeGrid">
+        <div class="type-card selected" onclick="selectType(this, 'drawing')">
+          <span class="type-emoji">🎨</span>
+          <h4>Drawing</h4>
+          <p>Painting, sketch, craft photo</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'singing')">
+          <span class="type-emoji">🎤</span>
+          <h4>Singing</h4>
+          <p>Song, melody, audio recording</p>
+        </div>
+        <div class="type-card" onclick="selectType(this, 'dancing')">
+          <span class="type-emoji">💃</span>
+          <h4>Dancing</h4>
+          <p>Dance, performance, video clip</p>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <span class="dz-icon" id="dzIcon">🖍️🖌️🎨</span>
+        <h3 id="dzTitle">Add Zohar's latest drawing!</h3>
+        <p>Drop a photo or video here</p>
+        <span class="formats">JPG · PNG · HEIC · MP4 · MOV · up to 50 MB</span>
+      </div>
+      <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="handleFile(this)">
+
+      <!-- File Preview (hidden until file selected) -->
+      <div class="file-preview" id="filePreview">
+        <div class="fp-thumb" id="fpThumb">📄</div>
+        <div class="fp-info">
+          <div class="fp-name" id="fpName">photo.jpg</div>
+          <div class="fp-size" id="fpSize">2.4 MB</div>
+        </div>
+        <button class="fp-remove" onclick="removeFile()">✕</button>
+      </div>
+
+      <!-- Actions (hidden until file selected) -->
+      <div class="upload-actions" id="uploadActions">
+        <button class="btn-cancel" onclick="removeFile()">Cancel</button>
+        <button class="btn-upload">Upload Creation →</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let currentKid = 'Zohar';
+let currentType = 'drawing';
+
+const typeConfig = {
+  drawing: { icon: '🖍️🖌️🎨', label: 'drawing', formats: 'JPG · PNG · HEIC · up to 50 MB' },
+  singing: { icon: '🎵🎤🎶', label: 'song', formats: 'MP3 · WAV · M4A · MP4 · up to 50 MB' },
+  dancing: { icon: '💃🎬🕺', label: 'dance', formats: 'MP4 · MOV · HEIC · up to 50 MB' }
+};
+
+function selectKid(el, name) {
+  document.querySelectorAll('.kid-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentKid = name;
+  updateDropZone();
+}
+
+function selectType(el, type) {
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentType = type;
+  updateDropZone();
+}
+
+function updateDropZone() {
+  const cfg = typeConfig[currentType];
+  document.getElementById('dzIcon').textContent = cfg.icon;
+  document.getElementById('dzTitle').textContent = `Add ${currentKid}'s latest ${cfg.label}!`;
+  document.querySelector('.drop-zone .formats').textContent = cfg.formats;
+}
+
+function handleFile(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+
+  document.getElementById('fpName').textContent = file.name;
+  document.getElementById('fpSize').textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
+
+  const thumb = document.getElementById('fpThumb');
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = e => { thumb.innerHTML = `<img src="${e.target.result}" alt="">`; };
+    reader.readAsDataURL(file);
+  } else if (file.type.startsWith('video/')) {
+    thumb.innerHTML = '🎬';
+  } else if (file.type.startsWith('audio/')) {
+    thumb.innerHTML = '🎵';
+  }
+
+  document.getElementById('filePreview').classList.add('visible');
+  document.getElementById('uploadActions').classList.add('visible');
+  document.getElementById('dropZone').style.display = 'none';
+}
+
+function removeFile() {
+  document.getElementById('fileInput').value = '';
+  document.getElementById('filePreview').classList.remove('visible');
+  document.getElementById('uploadActions').classList.remove('visible');
+  document.getElementById('dropZone').style.display = '';
+  document.getElementById('fpThumb').innerHTML = '📄';
+}
+
+// Drag & drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) {
+    document.getElementById('fileInput').files = e.dataTransfer.files;
+    handleFile(document.getElementById('fileInput'));
+  }
+});
+</script>
+
+</body>
+</html>
