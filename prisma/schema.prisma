@@ -69,6 +69,7 @@ model Child {
   avatar_emoji  String
   share_code    String?   @unique
   date_of_birth DateTime?
+  is_public     Boolean   @default(false)
   created_at    DateTime  @default(now())
   parent        User?     @relation(fields: [parent_id], references: [id])
   follows       Follow[]

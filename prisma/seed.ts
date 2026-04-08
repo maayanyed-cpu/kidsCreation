@@ -59,6 +59,7 @@ async function main() {
       avatar_emoji: "⚡",
       share_code: "arad-x1k9",
       date_of_birth: new Date("2016-01-15"), // ~age 10
+      is_public: true,
     },
     {
       id: "child_002",
@@ -68,6 +69,7 @@ async function main() {
       avatar_emoji: "🌸",
       share_code: "noa-m3p7",
       date_of_birth: new Date("2019-09-10"), // ~age 6.5, the gymnast
+      is_public: false,
     },
     {
       id: "child_003",
@@ -77,6 +79,7 @@ async function main() {
       avatar_emoji: "🦁",
       share_code: "zohar-a7k2",
       date_of_birth: new Date("2023-03-15"), // ~age 3
+      is_public: false,
     },
   ];
 

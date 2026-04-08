@@ -5,5 +5,6 @@ export interface Child {
   avatar_emoji: string;
   share_code?: string | null;
   date_of_birth?: Date | null;
+  is_public?: boolean;
   created_at: Date;
 }
