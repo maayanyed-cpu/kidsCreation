@@ -1,0 +1,24 @@
+{
+  "name": "Arti Steps",
+  "short_name": "ArtiSteps",
+  "description": "Preserve your little artists' creations. Share with family. Watch them grow.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffdfb",
+  "theme_color": "#f06449",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

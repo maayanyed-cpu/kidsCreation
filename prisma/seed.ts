@@ -677,6 +677,309 @@ async function main() {
   }
 
   console.log(`Created ${challenges.length} Challenge records`);
+
+  // ─── Family Invites ────────────────────────────────────────────────────────
+
+  const familyInvites = [
+    {
+      id: "invite_001",
+      email: "grandma@example.com",
+      kid_id: "child_001",
+      invited_by: testParent.id,
+      status: "accepted",
+      created_at: new Date("2026-03-10"),
+    },
+    {
+      id: "invite_002",
+      email: "uncle.dave@example.com",
+      kid_id: "child_002",
+      invited_by: testParent.id,
+      status: "accepted",
+      created_at: new Date("2026-03-12"),
+    },
+    {
+      id: "invite_003",
+      email: "aunt.sarah@example.com",
+      kid_id: "child_003",
+      invited_by: testParent.id,
+      status: "pending",
+      created_at: new Date("2026-04-01"),
+    },
+    {
+      id: "invite_004",
+      email: "cousin.maya@example.com",
+      kid_id: "child_001",
+      invited_by: testParent.id,
+      status: "declined",
+      created_at: new Date("2026-03-20"),
+    },
+  ];
+
+  for (const invite of familyInvites) {
+    await prisma.familyInvite.upsert({
+      where: { id: invite.id },
+      update: invite,
+      create: invite,
+    });
+  }
+
+  console.log(`Created ${familyInvites.length} FamilyInvite records`);
+
+  // ─── Followers for accepted invites ────────────────────────────────────────
+
+  const acceptedInvites = familyInvites.filter((i) => i.status === "accepted");
+  for (const invite of acceptedInvites) {
+    const emailNorm = invite.email.toLowerCase();
+    const displayName = emailNorm.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+    const follower = await prisma.follower.upsert({
+      where: { email: emailNorm },
+      update: {},
+      create: { email: emailNorm, name: displayName },
+    });
+
+    // Create follow relationship
+    const existingFollow = await prisma.follow.findUnique({
+      where: { follower_id_child_id: { follower_id: follower.id, child_id: invite.kid_id } },
+    });
+    if (!existingFollow) {
+      await prisma.follow.create({
+        data: { follower_id: follower.id, child_id: invite.kid_id },
+      });
+    }
+  }
+
+  console.log(`Created ${acceptedInvites.length} Follower + Follow records from accepted invites`);
+
+  // ─── Points ────────────────────────────────────────────────────────────────
+
+  await prisma.points.upsert({
+    where: { user_id: testParent.id },
+    update: { total_points: 340, tier: "Creative Explorer" },
+    create: {
+      id: "pts_001",
+      user_id: testParent.id,
+      total_points: 340,
+      tier: "Creative Explorer",
+    },
+  });
+
+  console.log("Created Points record for test parent");
+
+  // ─── Points History ────────────────────────────────────────────────────────
+
+  const pointsHistory = [
+    {
+      id: "ph_001",
+      user_id: testParent.id,
+      action: "add_kid",
+      points_earned: 15,
+      description: "Added kid profile: Arad",
+      created_at: new Date("2026-01-02"),
+    },
+    {
+      id: "ph_002",
+      user_id: testParent.id,
+      action: "add_kid",
+      points_earned: 15,
+      description: "Added kid profile: Noa",
+      created_at: new Date("2026-01-02"),
+    },
+    {
+      id: "ph_003",
+      user_id: testParent.id,
+      action: "add_kid",
+      points_earned: 15,
+      description: "Added kid profile: Zohar",
+      created_at: new Date("2026-01-02"),
+    },
+    {
+      id: "ph_004",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Rainbow City\" drawing",
+      created_at: new Date("2026-03-21"),
+    },
+    {
+      id: "ph_005",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Spaceship\" drawing",
+      created_at: new Date("2026-03-18"),
+    },
+    {
+      id: "ph_006",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Noa — uploaded \"Unicorn\" drawing",
+      created_at: new Date("2026-03-19"),
+    },
+    {
+      id: "ph_007",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Arad — uploaded \"Robot Warrior\" drawing",
+      created_at: new Date("2026-03-18"),
+    },
+    {
+      id: "ph_008",
+      user_id: testParent.id,
+      action: "invite",
+      points_earned: 25,
+      description: "grandma@example.com accepted your invite!",
+      created_at: new Date("2026-03-10"),
+    },
+    {
+      id: "ph_009",
+      user_id: testParent.id,
+      action: "invite",
+      points_earned: 25,
+      description: "uncle.dave@example.com accepted your invite!",
+      created_at: new Date("2026-03-12"),
+    },
+    {
+      id: "ph_010",
+      user_id: testParent.id,
+      action: "challenge",
+      points_earned: 20,
+      description: "Arad — completed \"Rainbow World\" challenge",
+      created_at: new Date("2026-02-14"),
+    },
+    {
+      id: "ph_011",
+      user_id: testParent.id,
+      action: "encourage",
+      points_earned: 5,
+      description: "You encouraged Chen's \"Sunset\" painting",
+      created_at: new Date("2026-03-15"),
+    },
+    {
+      id: "ph_012",
+      user_id: testParent.id,
+      action: "streak",
+      points_earned: 30,
+      description: "3-day upload streak bonus!",
+      created_at: new Date("2026-03-19"),
+    },
+    {
+      id: "ph_013",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Family Picnic\" drawing",
+      created_at: new Date("2026-03-15"),
+    },
+    {
+      id: "ph_014",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Mermaid\" drawing",
+      created_at: new Date("2026-03-12"),
+    },
+    {
+      id: "ph_015",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Arad — uploaded \"Soccer Game\" drawing",
+      created_at: new Date("2026-03-10"),
+    },
+    {
+      id: "ph_016",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Noa — uploaded \"Ballet Dancer\" drawing",
+      created_at: new Date("2026-03-11"),
+    },
+    {
+      id: "ph_017",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Basketball Player\" drawing",
+      created_at: new Date("2026-03-05"),
+    },
+    {
+      id: "ph_018",
+      user_id: testParent.id,
+      action: "upload",
+      points_earned: 10,
+      description: "Zohar — uploaded \"Garden\" drawing",
+      created_at: new Date("2026-03-02"),
+    },
+  ];
+
+  for (const ph of pointsHistory) {
+    await prisma.pointsHistory.upsert({
+      where: { id: ph.id },
+      update: ph,
+      create: ph,
+    });
+  }
+
+  console.log(`Created ${pointsHistory.length} PointsHistory records`);
+
+  // ─── Promo Codes ───────────────────────────────────────────────────────────
+
+  const promoCodes = [
+    {
+      id: "promo_001",
+      code: "EARLYBIRD",
+      discount_percent: 100,
+      max_uses: 50,
+      current_uses: 3,
+      active: true,
+      expires_at: new Date("2026-12-31"),
+    },
+    {
+      id: "promo_002",
+      code: "FAMILY2026",
+      discount_percent: 100,
+      max_uses: 100,
+      current_uses: 7,
+      active: true,
+      expires_at: new Date("2026-12-31"),
+    },
+    {
+      id: "promo_003",
+      code: "VIPFRIEND",
+      discount_percent: 100,
+      max_uses: 20,
+      current_uses: 1,
+      active: true,
+      expires_at: new Date("2026-06-30"),
+    },
+  ];
+
+  for (const promo of promoCodes) {
+    await prisma.promoCode.upsert({
+      where: { id: promo.id },
+      update: promo,
+      create: promo,
+    });
+  }
+
+  console.log(`Created ${promoCodes.length} PromoCode records`);
+
+  // ─── User Subscription (test parent on free plan) ──────────────────────────
+
+  await prisma.userSubscription.upsert({
+    where: { user_id: testParent.id },
+    update: {},
+    create: {
+      id: "sub_001",
+      user_id: testParent.id,
+      plan: "free",
+    },
+  });
+
+  console.log("Created UserSubscription for test parent (free plan)");
   console.log("Seed complete!");
 }
 

@@ -12,10 +12,7 @@ interface RecentActivity {
 
 interface PointsPageProps {
   total: number;
-  artworks: number;
-  followers: number;
-  submissions: number;
-  children: number;
+  tier: string;
   recentActivity: RecentActivity[];
 }
 
@@ -48,7 +45,7 @@ const TOASTS = [
   { emoji: "🏆", title: "Challenge completed!", desc: "Arad placed 2nd in \"Dream House\"", pts: 20, label: "After completing a challenge" },
 ];
 
-export function PointsPage({ total, recentActivity }: PointsPageProps) {
+export function PointsPage({ total, tier, recentActivity }: PointsPageProps) {
   const tierInfo = getTier(total);
   const progressPct = tierInfo.nextTierAt
     ? Math.min(100, Math.round(((total - tierInfo.tierStart) / (tierInfo.nextTierAt - tierInfo.tierStart)) * 100))

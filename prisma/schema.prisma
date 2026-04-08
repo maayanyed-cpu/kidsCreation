@@ -179,3 +179,58 @@ model ArtworkAnalysis {
   emotional_tone     String    @default("Joyful")
   deleted_at         DateTime? // soft delete
 }
+
+model FamilyInvite {
+  id         String   @id @default(cuid())
+  email      String
+  kid_id     String
+  invited_by String   // user id of the parent who sent it
+  status     String   @default("pending") // "pending" | "accepted" | "declined"
+  created_at DateTime @default(now())
+
+  @@map("family_invites")
+}
+
+model Points {
+  id           String   @id @default(cuid())
+  user_id      String   @unique
+  total_points Int      @default(0)
+  tier         String   @default("Budding Artist") // "Budding Artist" | "Creative Explorer" | "Star Curator" | "Master Guardian"
+  created_at   DateTime @default(now())
+
+  @@map("points")
+}
+
+model PointsHistory {
+  id            String   @id @default(cuid())
+  user_id       String
+  action        String   // "upload" | "invite" | "challenge" | "encourage" | "add_kid" | "streak"
+  points_earned Int
+  description   String
+  created_at    DateTime @default(now())
+
+  @@map("points_history")
+}
+
+model PromoCode {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  discount_percent Int       @default(100) // 100 = free
+  max_uses         Int
+  current_uses     Int       @default(0)
+  active           Boolean   @default(true)
+  expires_at       DateTime?
+  created_at       DateTime  @default(now())
+
+  @@map("promo_codes")
+}
+
+model UserSubscription {
+  id            String   @id @default(cuid())
+  user_id       String   @unique
+  plan          String   @default("free") // "free" | "pro" | "family"
+  promo_code_id String?  // which PromoCode was used (null if paid via Stripe)
+  created_at    DateTime @default(now())
+
+  @@map("user_subscriptions")
+}

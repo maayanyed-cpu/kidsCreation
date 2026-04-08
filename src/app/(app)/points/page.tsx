@@ -1,6 +1,24 @@
 import { prisma } from "@/lib/db/prisma";
 import { PointsPage } from "@/components/points/PointsPage";
 
+const ACTION_EMOJI: Record<string, string> = {
+  upload: "🎨",
+  invite: "👨‍👩‍👧",
+  challenge: "🏆",
+  encourage: "💬",
+  add_kid: "👶",
+  streak: "📅",
+};
+
+const ACTION_TYPE: Record<string, "upload" | "invite" | "challenge" | "reaction"> = {
+  upload: "upload",
+  invite: "invite",
+  challenge: "challenge",
+  encourage: "reaction",
+  add_kid: "upload",
+  streak: "upload",
+};
+
 function timeAgo(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -13,75 +31,38 @@ function timeAgo(date: Date): string {
 }
 
 export default async function PointsPageServer() {
-  const [artworks, followers, submissions, children] = await Promise.all([
-    prisma.artworkAnalysis.count({ where: { deleted_at: null } }),
-    prisma.follower.count(),
-    prisma.challengeSubmission.count(),
-    prisma.child.count(),
+  // Use the test parent for now (single-user mode)
+  const user = await prisma.user.findFirst({ orderBy: { created_at: "asc" } });
+  if (!user) {
+    return <PointsPage total={0} tier="Budding Artist" recentActivity={[]} />;
+  }
+
+  const [pointsRow, history] = await Promise.all([
+    prisma.points.findUnique({ where: { user_id: user.id } }),
+    prisma.pointsHistory.findMany({
+      where: { user_id: user.id },
+      orderBy: { created_at: "desc" },
+      take: 10,
+    }),
   ]);
 
-  const total = artworks * 10 + followers * 25 + submissions * 20 + children * 15;
+  const total = pointsRow?.total_points ?? 0;
+  const tier = pointsRow?.tier ?? "Budding Artist";
 
-  // Fetch recent artworks for activity list
-  const recentArtworks = await prisma.artworkAnalysis.findMany({
-    where: { deleted_at: null },
-    orderBy: { analysis_date: "desc" },
-    take: 6,
-    select: {
-      id: true,
-      title: true,
-      child_id: true,
-      analysis_date: true,
-    },
-  });
-
-  // Get child names for the recent artworks
-  const childIds = [...new Set(recentArtworks.map((a) => a.child_id))];
-  const childRows = await prisma.child.findMany({
-    where: { id: { in: childIds } },
-    select: { id: true, name: true },
-  });
-  const childNameMap = Object.fromEntries(childRows.map((c) => [c.id, c.name]));
-
-  // Build activity list: real uploads + mock invite/challenge entries
-  const recentActivity = [
-    ...recentArtworks.map((a) => ({
-      id: a.id,
-      type: "upload" as const,
-      emoji: "🎨",
-      highlight: childNameMap[a.child_id] ?? "Child",
-      label: `— uploaded "${a.title ?? "artwork"}" drawing`,
-      time: timeAgo(a.analysis_date),
-      points: 10,
-    })),
-    // Mock entries for variety
-    {
-      id: "mock-invite-1",
-      type: "invite" as const,
-      emoji: "👨‍👩‍👧",
-      highlight: "grandma@email.com",
-      label: "accepted your invite!",
-      time: "2 days ago",
-      points: 25,
-    },
-    {
-      id: "mock-challenge-1",
-      type: "challenge" as const,
-      emoji: "🏆",
-      highlight: "Weekly Challenge",
-      label: '— completed "Draw Your Dream House"',
-      time: "3 days ago",
-      points: 20,
-    },
-  ];
+  const recentActivity = history.map((h) => ({
+    id: h.id,
+    type: ACTION_TYPE[h.action] ?? ("upload" as const),
+    emoji: ACTION_EMOJI[h.action] ?? "⭐",
+    highlight: h.description.split("—")[0]?.trim() ?? h.action,
+    label: h.description.includes("—") ? "—" + h.description.split("—").slice(1).join("—") : h.description,
+    time: timeAgo(h.created_at),
+    points: h.points_earned,
+  }));
 
   return (
     <PointsPage
       total={total}
-      artworks={artworks}
-      followers={followers}
-      submissions={submissions}
-      children={children}
+      tier={tier}
       recentActivity={recentActivity}
     />
   );
