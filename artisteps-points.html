@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arti Steps — Points System</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral-50:#fff5f2;--coral-100:#ffe8e0;--coral-200:#ffc9b8;
+      --coral-400:#ff8566;--coral-500:#f06449;--coral-600:#d94f36;
+      --teal-50:#f0faf8;--teal-100:#d4f1eb;--teal-200:#a8e3d7;
+      --teal-400:#3bb09e;--teal-500:#2a9182;--teal-600:#1e7368;
+      --sand-50:#fefcf8;--sand-100:#fdf6eb;--sand-200:#f8ead0;
+      --lavender-50:#f8f5ff;--lavender-100:#ede5ff;--lavender-400:#a78bfa;
+      --gold-50:#fffbeb;--gold-100:#fef3c7;--gold-400:#fbbf24;--gold-500:#f59e0b;--gold-600:#d97706;
+      --warm-white:#fffdfb;--cream:#faf8f5;
+      --stone-100:#f5f0eb;--stone-200:#e8e0d8;--stone-300:#d4c8bc;
+      --stone-400:#a89888;--stone-500:#7a6e62;--stone-600:#5c5248;
+      --stone-700:#3d352e;--stone-800:#2a241f;
+      --gradient-brand:linear-gradient(135deg,#f06449,#ff8566);
+      --gradient-teal:linear-gradient(135deg,#3bb09e,#6cc9b8);
+      --gradient-gold:linear-gradient(135deg,#fbbf24,#f59e0b);
+      --gradient-sunrise:linear-gradient(135deg,#ff8566,#f0a830);
+      --shadow-sm:0 1px 3px rgba(42,36,31,0.04);--shadow-md:0 4px 12px rgba(42,36,31,0.06);
+      --shadow-lg:0 12px 24px rgba(42,36,31,0.08);--shadow-coral:0 8px 24px rgba(240,100,73,0.15);
+      --shadow-gold:0 8px 24px rgba(251,191,36,0.2);
+      --font-display:'Fraunces',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif;
+      --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;--r-full:9999px;
+      --sidebar-w:220px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font-body);font-size:15px;color:var(--stone-700);background:var(--cream);min-height:100vh;-webkit-font-smoothing:antialiased}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font-family:inherit;font-size:inherit}
+
+    .app{display:flex;min-height:100vh}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--warm-white);border-right:1px solid var(--stone-200);padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+    .sb-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding:4px 8px}
+    .sb-logo{width:36px;height:36px;border-radius:11px;background:var(--gradient-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;position:relative;box-shadow:0 4px 12px rgba(240,100,73,0.2)}
+    .sb-logo::after{content:'';position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--teal-400);border:2px solid var(--warm-white)}
+    .sb-name{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--stone-800)}
+    .sb-name em{font-style:normal;color:var(--coral-500)}
+
+    /* ── SIDEBAR POINTS WIDGET ── */
+    .sb-points{
+      margin:0 4px 20px;padding:14px;
+      background:var(--gold-50);border:1px solid var(--gold-100);
+      border-radius:var(--r-lg);
+    }
+    .sb-points-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .sb-points-icon{font-size:20px}
+    .sb-points-count{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--gold-600)}
+    .sb-points-label{font-size:11px;font-weight:600;color:var(--gold-500);margin-left:2px}
+    .sb-points-bar{height:6px;background:var(--gold-100);border-radius:var(--r-full);overflow:hidden;margin-bottom:6px}
+    .sb-points-fill{height:100%;border-radius:var(--r-full);background:var(--gradient-gold);transition:width 0.6s ease}
+    .sb-points-next{font-size:11px;color:var(--stone-400)}
+    .sb-points-next strong{color:var(--gold-600)}
+
+    .sb-nav{display:flex;flex-direction:column;gap:2px;flex:1;margin-top:4px}
+    .sb-link{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--stone-500);transition:all 0.2s ease;position:relative}
+    .sb-link:hover{background:var(--stone-100);color:var(--stone-700)}
+    .sb-link.active{background:var(--coral-50);color:var(--coral-500);font-weight:600}
+    .sb-link.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--coral-500)}
+    .sb-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;opacity:0.55;flex-shrink:0}
+    .sb-link.active .sb-icon{opacity:1}.sb-link:hover .sb-icon{opacity:0.8}
+    .sb-icon svg{width:20px;height:20px}
+    .sb-divider{height:1px;background:var(--stone-100);margin:12px 8px}
+    .sb-footer{padding-top:14px;border-top:1px solid var(--stone-100);font-size:11px;color:var(--stone-300);padding-left:8px;letter-spacing:0.3px}
+
+    /* ── MAIN ── */
+    .main{flex:1;padding:36px 40px 60px;max-width:900px}
+
+    /* ── PAGE HEADER ── */
+    .page-header{margin-bottom:32px}
+    .page-header h1{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--stone-800);display:flex;align-items:center;gap:10px}
+    .page-header p{font-size:15px;color:var(--stone-400);margin-top:4px}
+
+    /* ── POINTS HERO CARD ── */
+    .points-hero{
+      background:linear-gradient(135deg,#fffbeb 0%,#fff5f2 50%,#f0faf8 100%);
+      border:1px solid var(--gold-100);
+      border-radius:var(--r-2xl);padding:32px;margin-bottom:28px;
+      display:flex;align-items:center;gap:32px;
+      position:relative;overflow:hidden;
+    }
+    .points-hero::before{
+      content:'';position:absolute;top:-40px;right:-40px;
+      width:200px;height:200px;border-radius:50%;
+      background:radial-gradient(circle,rgba(251,191,36,0.1) 0%,transparent 70%);
+    }
+    .points-circle{
+      width:120px;height:120px;border-radius:50%;flex-shrink:0;
+      background:var(--warm-white);border:4px solid var(--gold-400);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      box-shadow:var(--shadow-gold);position:relative;
+    }
+    .points-circle-num{font-family:var(--font-display);font-size:36px;font-weight:800;color:var(--gold-600);line-height:1}
+    .points-circle-label{font-size:11px;font-weight:600;color:var(--gold-500);text-transform:uppercase;letter-spacing:0.5px}
+    .points-info{flex:1;position:relative;z-index:1}
+    .points-tier-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 14px;background:var(--gold-100);
+      border-radius:var(--r-full);font-size:13px;font-weight:700;
+      color:var(--gold-600);margin-bottom:10px;
+    }
+    .points-info h2{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--stone-800);margin-bottom:4px}
+    .points-info p{font-size:14px;color:var(--stone-500);margin-bottom:14px;line-height:1.5}
+    .points-progress{display:flex;align-items:center;gap:12px}
+    .points-bar{flex:1;height:10px;background:var(--stone-100);border-radius:var(--r-full);overflow:hidden}
+    .points-bar-fill{height:100%;border-radius:var(--r-full);background:var(--gradient-gold);transition:width 0.8s ease}
+    .points-next-tier{font-size:12px;font-weight:600;color:var(--stone-400);white-space:nowrap}
+
+    /* ── HOW TO EARN ── */
+    .earn-section{margin-bottom:28px}
+    .section-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--stone-800);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .earn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .earn-card{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);padding:18px;
+      display:flex;align-items:flex-start;gap:14px;
+      transition:all 0.25s ease;
+    }
+    .earn-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .earn-icon{
+      width:44px;height:44px;border-radius:var(--r-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;flex-shrink:0;
+    }
+    .earn-icon.coral{background:var(--coral-50)}
+    .earn-icon.teal{background:var(--teal-50)}
+    .earn-icon.gold{background:var(--gold-50)}
+    .earn-icon.lav{background:var(--lavender-50)}
+    .earn-info h4{font-size:14px;font-weight:700;color:var(--stone-800);margin-bottom:2px}
+    .earn-info p{font-size:13px;color:var(--stone-400);line-height:1.4;margin-bottom:6px}
+    .earn-pts{
+      display:inline-flex;align-items:center;gap:4px;
+      font-size:13px;font-weight:700;color:var(--gold-600);
+      background:var(--gold-50);padding:2px 10px;border-radius:var(--r-full);
+    }
+
+    /* ── TIERS ── */
+    .tiers-section{margin-bottom:28px}
+    .tiers-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .tier-card{
+      text-align:center;padding:20px 14px;
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);transition:all 0.25s;position:relative;
+    }
+    .tier-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .tier-card.current{border-color:var(--gold-400);background:var(--gold-50);box-shadow:var(--shadow-gold)}
+    .tier-card.current::after{
+      content:'You are here';position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+      padding:2px 10px;background:var(--gold-400);color:#fff;
+      border-radius:var(--r-full);font-size:10px;font-weight:700;white-space:nowrap;
+    }
+    .tier-card.locked{opacity:0.5}
+    .tier-emoji{font-size:32px;margin-bottom:8px;display:block}
+    .tier-name{font-size:14px;font-weight:700;color:var(--stone-800);margin-bottom:2px}
+    .tier-range{font-size:12px;color:var(--stone-400);margin-bottom:8px}
+    .tier-perk{font-size:12px;color:var(--teal-600);font-weight:500;line-height:1.4}
+
+    /* ── RECENT POINTS ACTIVITY ── */
+    .activity-section{margin-bottom:28px}
+    .activity-list{
+      background:var(--warm-white);border:1px solid var(--stone-200);
+      border-radius:var(--r-xl);overflow:hidden;
+    }
+    .activity-item{
+      display:flex;align-items:center;gap:14px;
+      padding:14px 18px;border-bottom:1px solid var(--stone-100);
+    }
+    .activity-item:last-child{border-bottom:none}
+    .activity-icon{
+      width:36px;height:36px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;flex-shrink:0;
+    }
+    .activity-icon.upload{background:var(--coral-50)}
+    .activity-icon.invite{background:var(--teal-50)}
+    .activity-icon.challenge{background:var(--gold-50)}
+    .activity-icon.reaction{background:var(--lavender-50)}
+    .activity-text{flex:1;font-size:14px;color:var(--stone-600)}
+    .activity-text strong{color:var(--stone-800)}
+    .activity-time{font-size:12px;color:var(--stone-300);white-space:nowrap}
+    .activity-pts{
+      font-size:14px;font-weight:700;color:var(--teal-500);
+      white-space:nowrap;
+    }
+
+    /* ── SUCCESS TOASTS (mockups) ── */
+    .toast-section{margin-bottom:28px}
+    .toast-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .toast-mockup{
+      border-radius:var(--r-xl);overflow:hidden;
+      border:1px solid var(--stone-200);
+    }
+    .toast-screen{
+      background:var(--stone-100);padding:20px;min-height:160px;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;
+    }
+    .toast-popup{
+      background:var(--warm-white);border-radius:var(--r-lg);
+      padding:16px 20px;box-shadow:var(--shadow-lg);
+      text-align:center;max-width:240px;width:100%;
+      border:1px solid var(--stone-200);
+    }
+    .toast-popup .tp-emoji{font-size:32px;margin-bottom:8px;display:block}
+    .toast-popup .tp-title{font-size:15px;font-weight:700;color:var(--stone-800);margin-bottom:4px}
+    .toast-popup .tp-desc{font-size:13px;color:var(--stone-500);margin-bottom:8px}
+    .toast-popup .tp-points{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:4px 14px;background:var(--gold-50);border:1px solid var(--gold-100);
+      border-radius:var(--r-full);font-size:14px;font-weight:700;color:var(--gold-600);
+    }
+    .toast-label{padding:10px 14px;font-size:12px;font-weight:600;color:var(--stone-400);background:var(--warm-white);text-align:center}
+
+    @media(max-width:768px){
+      .sidebar{display:none}.main{padding:24px 16px}
+      .earn-grid,.tiers-row,.toast-grid{grid-template-columns:1fr}
+      .points-hero{flex-direction:column;text-align:center}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-logo">✦</div><span class="sb-name">Arti <em>Steps</em></span></div>
+
+    <!-- ═══ POINTS WIDGET IN SIDEBAR ═══ -->
+    <div class="sb-points">
+      <div class="sb-points-row">
+        <span class="sb-points-icon">⭐</span>
+        <span class="sb-points-count">340</span>
+        <span class="sb-points-label">pts</span>
+      </div>
+      <div class="sb-points-bar"><div class="sb-points-fill" style="width:68%"></div></div>
+      <div class="sb-points-next">160 pts to <strong>🌟 Star Curator</strong></div>
+    </div>
+
+    <nav class="sb-nav">
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Gallery</a>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="10"/></svg></span>Upload</a>
+      <div class="sb-divider"></div>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>My Kids</a>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></span>Family</a>
+      <div class="sb-divider"></div>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M7.5 14.5L5 21l7-3 7 3-2.5-6.5"/></svg></span>Challenges</a>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>Dashboard</a>
+      <a href="#" class="sb-link active"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>Points</a>
+      <a href="#" class="sb-link"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Progress</a>
+    </nav>
+    <div class="sb-footer">FamilyVibe Labs</div>
+  </aside>
+
+  <div class="main">
+
+    <div class="page-header">
+      <h1>⭐ My Points</h1>
+      <p>Earn points by uploading creations, inviting family, and completing challenges</p>
+    </div>
+
+    <!-- ═══ POINTS HERO ═══ -->
+    <div class="points-hero">
+      <div class="points-circle">
+        <div class="points-circle-num">340</div>
+        <div class="points-circle-label">Points</div>
+      </div>
+      <div class="points-info">
+        <div class="points-tier-badge">🌱 Creative Explorer</div>
+        <h2>You're doing great!</h2>
+        <p>Keep uploading your kids' art and inviting family to reach <strong>Star Curator</strong> tier</p>
+        <div class="points-progress">
+          <div class="points-bar"><div class="points-bar-fill" style="width:68%"></div></div>
+          <span class="points-next-tier">340 / 500</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ HOW TO EARN POINTS ═══ -->
+    <div class="earn-section">
+      <h3 class="section-title">💡 How to Earn Points</h3>
+      <div class="earn-grid">
+        <div class="earn-card">
+          <div class="earn-icon coral">🎨</div>
+          <div class="earn-info">
+            <h4>Upload a Creation</h4>
+            <p>Upload a drawing, song, or dance video for any of your kids</p>
+            <span class="earn-pts">⭐ +10 pts</span>
+          </div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon teal">👨‍👩‍👧</div>
+          <div class="earn-info">
+            <h4>Invite Family</h4>
+            <p>Invite a family member who accepts and joins the app</p>
+            <span class="earn-pts">⭐ +25 pts</span>
+          </div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon gold">🏆</div>
+          <div class="earn-info">
+            <h4>Complete a Challenge</h4>
+            <p>Submit an entry for a weekly creative challenge</p>
+            <span class="earn-pts">⭐ +20 pts</span>
+          </div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon lav">💬</div>
+          <div class="earn-info">
+            <h4>Encourage Others</h4>
+            <p>Leave kind comments on other kids' shared creations</p>
+            <span class="earn-pts">⭐ +5 pts</span>
+          </div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon coral">👶</div>
+          <div class="earn-info">
+            <h4>Add a Kid Profile</h4>
+            <p>Create a new profile for one of your children</p>
+            <span class="earn-pts">⭐ +15 pts</span>
+          </div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon teal">📅</div>
+          <div class="earn-info">
+            <h4>Daily Upload Streak</h4>
+            <p>Upload at least one creation 3 days in a row</p>
+            <span class="earn-pts">⭐ +30 bonus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ REWARD TIERS ═══ -->
+    <div class="tiers-section">
+      <h3 class="section-title">🏅 Reward Tiers</h3>
+      <div class="tiers-row">
+        <div class="tier-card">
+          <span class="tier-emoji">🌱</span>
+          <div class="tier-name">Budding Artist</div>
+          <div class="tier-range">0 – 99 pts</div>
+          <div class="tier-perk">Just getting started!</div>
+        </div>
+        <div class="tier-card current">
+          <span class="tier-emoji">🎨</span>
+          <div class="tier-name">Creative Explorer</div>
+          <div class="tier-range">100 – 499 pts</div>
+          <div class="tier-perk">Growing your family's gallery</div>
+        </div>
+        <div class="tier-card locked">
+          <span class="tier-emoji">🌟</span>
+          <div class="tier-name">Star Curator</div>
+          <div class="tier-range">500 – 999 pts</div>
+          <div class="tier-perk">A dedicated art-loving parent</div>
+        </div>
+        <div class="tier-card locked">
+          <span class="tier-emoji">💎</span>
+          <div class="tier-name">Master Guardian</div>
+          <div class="tier-range">1,000+ pts</div>
+          <div class="tier-perk">Top-tier memory keeper</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RECENT POINTS ACTIVITY ═══ -->
+    <div class="activity-section">
+      <h3 class="section-title">📋 Recent Points Activity</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon upload">🎨</div>
+          <div class="activity-text"><strong>Zohar</strong> — uploaded "Cityscape" drawing</div>
+          <span class="activity-time">2 hours ago</span>
+          <span class="activity-pts">+10</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon challenge">🏆</div>
+          <div class="activity-text"><strong>Arad</strong> — completed "Draw Your Dream House" challenge</div>
+          <span class="activity-time">Yesterday</span>
+          <span class="activity-pts">+20</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon invite">👨‍👩‍👧</div>
+          <div class="activity-text"><strong>grandma@email.com</strong> accepted your invite!</div>
+          <span class="activity-time">2 days ago</span>
+          <span class="activity-pts">+25</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon reaction">💬</div>
+          <div class="activity-text">You encouraged <strong>Chen's</strong> "Sunset" painting</div>
+          <span class="activity-time">3 days ago</span>
+          <span class="activity-pts">+5</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon upload">🎨</div>
+          <div class="activity-text"><strong>Noa</strong> — uploaded "Flowers" drawing</div>
+          <span class="activity-time">4 days ago</span>
+          <span class="activity-pts">+10</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon upload">🎤</div>
+          <div class="activity-text"><strong>Gaya</strong> — uploaded "Twinkle Star" song</div>
+          <span class="activity-time">5 days ago</span>
+          <span class="activity-pts">+10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SUCCESS TOAST MOCKUPS ═══ -->
+    <div class="toast-section">
+      <h3 class="section-title">🎉 Points Pop-ups (how they appear in-app)</h3>
+      <div class="toast-grid">
+        <div class="toast-mockup">
+          <div class="toast-screen">
+            <div class="toast-popup">
+              <span class="tp-emoji">🎨</span>
+              <div class="tp-title">Creation uploaded!</div>
+              <div class="tp-desc">Zohar's drawing is now in the gallery</div>
+              <span class="tp-points">⭐ +10 points</span>
+            </div>
+          </div>
+          <div class="toast-label">After uploading a creation</div>
+        </div>
+        <div class="toast-mockup">
+          <div class="toast-screen">
+            <div class="toast-popup">
+              <span class="tp-emoji">🎉</span>
+              <div class="tp-title">Family member joined!</div>
+              <div class="tp-desc">Grandma accepted your invitation</div>
+              <span class="tp-points">⭐ +25 points</span>
+            </div>
+          </div>
+          <div class="toast-label">When an invite is accepted</div>
+        </div>
+        <div class="toast-mockup">
+          <div class="toast-screen">
+            <div class="toast-popup">
+              <span class="tp-emoji">🏆</span>
+              <div class="tp-title">Challenge completed!</div>
+              <div class="tp-desc">Arad placed 2nd in "Dream House"</div>
+              <span class="tp-points">⭐ +20 points</span>
+            </div>
+          </div>
+          <div class="toast-label">After completing a challenge</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
