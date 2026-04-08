@@ -39,6 +39,9 @@ export function FamilyAccess({
   const [inviting, setInviting] = useState(false);
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
   const [inviteError, setInviteError] = useState<string | null>(null);
+  const [addViewerFor, setAddViewerFor] = useState<string | null>(null);
+  const [viewerEmail, setViewerEmail] = useState("");
+  const [addingViewer, setAddingViewer] = useState(false);
 
   const sendInvite = useCallback(
     async (email: string, childId: string) => {
@@ -94,6 +97,45 @@ export function FamilyAccess({
     },
     [allMembers]
   );
+
+  const handleAddViewer = async (childId: string) => {
+    if (!viewerEmail.trim()) return;
+    setAddingViewer(true);
+    try {
+      const res = await fetch("/api/family/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: viewerEmail.trim(), childId }),
+      });
+      if (!res.ok) return;
+
+      const emailNorm = viewerEmail.trim().toLowerCase();
+      const existingFollower = allMembers.find((f) => f.email === emailNorm);
+      const followerObj: FollowerData = existingFollower ?? {
+        id: "temp-" + Date.now(),
+        email: emailNorm,
+        name: emailNorm.split("@")[0],
+      };
+
+      if (!existingFollower) {
+        setAllMembers((prev) => [...prev, followerObj]);
+      }
+
+      setKids((prev) =>
+        prev.map((k) => {
+          if (k.id === childId && !k.followers.find((f) => f.email === emailNorm)) {
+            return { ...k, followers: [...k.followers, followerObj] };
+          }
+          return k;
+        })
+      );
+
+      setViewerEmail("");
+      setAddViewerFor(null);
+    } catch { /* ignore */ } finally {
+      setAddingViewer(false);
+    }
+  };
 
   return (
     <>
@@ -402,6 +444,51 @@ export function FamilyAccess({
           color: #9b8474;
           padding: 8px 0;
         }
+        .fa-viewer-inline {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+          margin-top: 4px;
+        }
+        .fa-viewer-input {
+          flex: 1;
+          padding: 6px 10px;
+          border: 1px solid #e8e0d8;
+          border-radius: 8px;
+          font-size: 13px;
+          background: #faf8f5;
+          color: #2a241f;
+          outline: none;
+          font-family: var(--font-body);
+        }
+        .fa-viewer-input:focus {
+          border-color: #3bb09e;
+          box-shadow: 0 0 0 2px rgba(59,176,158,0.12);
+        }
+        .fa-viewer-send {
+          padding: 6px 14px;
+          border: none;
+          border-radius: 8px;
+          background: #3bb09e;
+          color: #fff;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: var(--font-body);
+          transition: background 0.15s;
+        }
+        .fa-viewer-send:hover:not(:disabled) { background: #2a9182; }
+        .fa-viewer-send:disabled { opacity: 0.5; cursor: not-allowed; }
+        .fa-viewer-cancel {
+          padding: 4px 8px;
+          border: none;
+          background: none;
+          font-size: 14px;
+          color: #9b8474;
+          cursor: pointer;
+          font-family: var(--font-body);
+        }
+        .fa-viewer-cancel:hover { color: #e53e3e; }
       `}</style>
 
       <div className="fa-page">
@@ -504,7 +591,41 @@ export function FamilyAccess({
                   ) : (
                     <div className="fa-no-followers">No viewers yet</div>
                   )}
-                  <button className="fa-add-viewer-btn">&#xFF0B; Add viewer</button>
+                  {addViewerFor === kid.id ? (
+                    <div className="fa-viewer-inline">
+                      <input
+                        type="email"
+                        className="fa-viewer-input"
+                        placeholder="viewer@email.com"
+                        value={viewerEmail}
+                        onChange={(e) => setViewerEmail(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddViewer(kid.id);
+                          }
+                        }}
+                        autoFocus
+                      />
+                      <button
+                        className="fa-viewer-send"
+                        disabled={addingViewer || !viewerEmail.trim()}
+                        onClick={() => handleAddViewer(kid.id)}
+                      >
+                        {addingViewer ? "..." : "Add"}
+                      </button>
+                      <button
+                        className="fa-viewer-cancel"
+                        onClick={() => { setAddViewerFor(null); setViewerEmail(""); }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <button className="fa-add-viewer-btn" onClick={() => { setAddViewerFor(kid.id); setViewerEmail(""); }}>
+                      &#xFF0B; Add viewer
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
