@@ -23,6 +23,7 @@ export default async function KidsPage() {
         name: child.name,
         name_he: child.name_he,
         avatar_emoji: child.avatar_emoji,
+        avatar_color: child.avatar_color ?? null,
         share_code: child.share_code,
         date_of_birth: child.date_of_birth?.toISOString() ?? null,
         is_public: child.is_public,

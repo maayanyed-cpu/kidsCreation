@@ -67,6 +67,7 @@ model Child {
   name          String
   name_he       String?
   avatar_emoji  String
+  avatar_color  String    @default("#f06449")
   share_code    String?   @unique
   date_of_birth DateTime?
   is_public     Boolean   @default(false)

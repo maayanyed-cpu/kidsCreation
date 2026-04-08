@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 
 interface KidData {
   id: string;
   name: string;
   name_he: string | null;
   avatar_emoji: string;
+  avatar_color: string | null;
   share_code: string | null;
   date_of_birth: string | null;
   is_public: boolean;
@@ -300,10 +302,10 @@ export function KidProfiles({ children: initialChildren }: { children: KidData[]
             <p>Manage your children&apos;s profiles and privacy settings</p>
           </div>
 
-          <button className="kp-add-btn">
+          <Link href="/kids/add" className="kp-add-btn" style={{ textDecoration: "none" }}>
             <span style={{ fontSize: 18 }}>&#xFF0B;</span>
             Add a Kid
-          </button>
+          </Link>
 
           {kids.length === 0 ? (
             <div className="kp-empty">
@@ -311,14 +313,14 @@ export function KidProfiles({ children: initialChildren }: { children: KidData[]
               <p>No kids yet. Add your first child to get started!</p>
             </div>
           ) : (
-            kids.map((kid, index) => (
+            kids.map((kid) => (
               <div key={kid.id} className="kp-card">
                 <div className="kp-card-top">
                   <div
                     className="kp-avatar"
-                    style={{ background: AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length] }}
+                    style={{ background: kid.avatar_color || "#f06449" }}
                   >
-                    {kid.name.charAt(0).toUpperCase()}
+                    {kid.avatar_emoji || kid.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="kp-info">
                     <div className="kp-name-row">
